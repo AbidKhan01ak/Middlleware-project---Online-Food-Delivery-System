@@ -1,0 +1,40 @@
+foodie-customer-frontend
+|- public/
+|-src/
+|  |
+|  |- components/
+|  |    |- ui/
+|  |    |- OrderCard.tsx
+|  |
+|  |- hooks
+|  |   |- use-mobile.tsx
+|  |   |- use-toast.ts
+|  |
+|  |- lib
+|  |   |- mockData.ts
+|  |   |- utils.ts
+|  |
+|  |- pages
+|  |	|- Index.tsx
+|  |	|- NotFound.tsx
+|  |
+|  |- types
+|  |    |- order.ts
+|  |	
+|  |- api.js
+|  |- App.css
+|  |- App.tsx
+|  |- index.css
+|  |- index.tsx
+|  |- main.tsx
+|  
+|- components.json
+|- eslint.config.js
+|- index.html
+|- package.json
+|- postcss.config.js
+|- tailwind.config.js
+|- tsconfig.app.json
+|- tsconfig.json
+|- tsconfig.node.json
+|- vite.config.js

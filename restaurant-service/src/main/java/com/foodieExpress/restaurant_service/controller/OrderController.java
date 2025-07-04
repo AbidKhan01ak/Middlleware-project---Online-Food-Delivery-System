@@ -36,14 +36,13 @@ public class OrderController {
 
     @PostMapping("/ready")
     public ResponseEntity<String> markOrderReady(@RequestBody OrderMessage message) {
-        orderService.markOrderAccepted(message.getOrderId());
-        publisher.sendOrderReady(message);
+        orderService.markOrderReadyAndNotify(message.getOrderId());
         return ResponseEntity.ok("Order marked as ready");
     }
 
     @PostMapping("/delivered")
     public ResponseEntity<String> confirmDelivery(@RequestBody OrderMessage message) {
-        publisher.sendOrderDelivered(message);
+        orderService.confirmOrderDeliveredAndNotify(message.getOrderId());
         return ResponseEntity.ok("Order delivery confirmed to restaurant");
     }
 }
