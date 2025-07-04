@@ -3,7 +3,10 @@ import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { placeOrder, trackOrder, getOrderStatus } from "../api";
+import { placeOrder } from "../api";
+
+const DELIVERY_FEE = 30;
+const TAX_RATE = 0.08;
 
 const Cart = () => {
   const { items, updateQuantity, removeItem, getTotalPrice, clearCart } =
@@ -18,13 +21,13 @@ const Cart = () => {
       setLoading(true);
 
       const orderData = {
-        customerId: 1, // TODO: Replace with dynamic customer ID
-        restaurantId: items[0].restaurantId,
+        customerId: "cust001", // TODO: Replace with dynamic customer ID
+        restaurantId: items[0].restaurantId || "rest001", // Assuming all items are from the same restaurant
         items: items.map((item) => item.name), // only names expected by backend
       };
 
       const response = await placeOrder(orderData);
-      const orderId = response.id;
+      const orderId = response.id || "unknown";
 
       clearCart();
       navigate(`/track-order/${orderId}`);
@@ -61,6 +64,10 @@ const Cart = () => {
     );
   }
 
+  const subtotal = getTotalPrice();
+  const tax = subtotal * TAX_RATE;
+  const total = subtotal + DELIVERY_FEE + tax;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -79,7 +86,7 @@ const Cart = () => {
                         from {item.restaurantName}
                       </p>
                       <p className="text-green-600 font-semibold">
-                        ${item.price.toFixed(2)} each
+                        ${item.price.toFixed(0)} each
                       </p>
                     </div>
 
@@ -118,7 +125,7 @@ const Cart = () => {
 
                   <div className="mt-4 pt-4 border-t">
                     <p className="text-right font-semibold">
-                      Subtotal: ${(item.price * item.quantity).toFixed(2)}
+                      Subtotal: ${(item.price * item.quantity).toFixed(0)}
                     </p>
                   </div>
                 </CardContent>
@@ -135,30 +142,23 @@ const Cart = () => {
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>${getTotalPrice().toFixed(2)}</span>
+                  <span>${subtotal.toFixed(0)}</span>
                 </div>
 
                 <div className="flex justify-between">
                   <span>Delivery Fee</span>
-                  <span>$2.99</span>
+                  <span>₹{DELIVERY_FEE}</span>
                 </div>
 
                 <div className="flex justify-between">
                   <span>Tax</span>
-                  <span>${(getTotalPrice() * 0.08).toFixed(2)}</span>
+                  <span>₹{tax.toFixed(0)}</span>
                 </div>
 
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span>
-                      $
-                      {(
-                        getTotalPrice() +
-                        2.99 +
-                        getTotalPrice() * 0.08
-                      ).toFixed(2)}
-                    </span>
+                    <span>₹{total.toFixed(0)}</span>
                   </div>
                 </div>
 

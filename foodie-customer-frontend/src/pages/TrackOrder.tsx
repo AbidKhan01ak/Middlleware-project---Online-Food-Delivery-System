@@ -45,6 +45,7 @@ const TrackOrder = () => {
   const fetchOrderStatus = async (id: string) => {
     try {
       const data = await trackOrder(id); // this uses POST internally
+
       const mappedOrder: OrderStatus = {
         id: data.id?.toString() || id,
         status: data?.status?.toLowerCase() ?? "placed", // Assuming enum like DELIVERED, map to lowercase
@@ -52,13 +53,13 @@ const TrackOrder = () => {
           data.estimatedDeliveryTime
         ).toLocaleTimeString(),
         items: (data.items ?? []).map((item: any) => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
+          name: item.name ?? "Item",
+          quantity: item.quantity ?? 1,
+          price: item.price ?? 0,
         })),
-        totalAmount: data.totalAmount,
-        deliveryAddress: data.deliveryAddress,
-        restaurantName: data.restaurant.name ?? null, // Assuming nested restaurant object
+        totalAmount: data.totalAmount ?? 0,
+        deliveryAddress: data.deliveryAddress ?? "Unknown Address",
+        restaurantName: data.restaurant?.name ?? "Unknown Restaurant", // Assuming nested restaurant object
       };
 
       setOrderStatus(mappedOrder);
