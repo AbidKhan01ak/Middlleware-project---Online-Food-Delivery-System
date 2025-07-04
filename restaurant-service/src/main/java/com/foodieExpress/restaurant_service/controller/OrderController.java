@@ -9,6 +9,7 @@ import com.foodieExpress.restaurant_service.dto.OrderMessage;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/restaurant")
 public class OrderController {
