@@ -12,14 +12,14 @@ import java.util.UUID;
 public class Order implements Serializable {
 
     @Id
-    @Column(name = "order_id", nullable = false, length = 36)
+    @Column(name = "order_id", nullable = false, updatable = false)
     private String orderId;
     private String customerId;
     private String restaurantId;
     private String address;
 
     @ElementCollection
-    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
+    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"))
     @Column(name = "item")
     private List<String> items;
     private String status;

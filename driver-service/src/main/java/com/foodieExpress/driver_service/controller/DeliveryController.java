@@ -4,10 +4,9 @@ import com.foodieExpress.driver_service.model.Order;
 import com.foodieExpress.driver_service.model.DeliveryStatus;
 import com.foodieExpress.driver_service.service.DeliveryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/driver")
@@ -18,6 +17,7 @@ public class DeliveryController {
     public DeliveryController(DeliveryService deliveryService){
         this.deliveryService = deliveryService;
     }
+
     @PostMapping("/status")
     public ResponseEntity<String> updateStatus(@RequestBody DeliveryStatus status) {
         deliveryService.updateStatus(status);
@@ -26,7 +26,12 @@ public class DeliveryController {
 
     @PostMapping("/assign")
     public ResponseEntity<String> assignOrder(@RequestBody Order order) {
-    deliveryService.assignOrder(order);
-    return ResponseEntity.ok("Order assigned to driver");
-}
+        deliveryService.assignOrder(order);
+        return ResponseEntity.ok("Order assigned to driver");
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<List<Order>> getAssignedOrders() {
+        return ResponseEntity.ok(deliveryService.getAssignedOrders());
+    }
 }

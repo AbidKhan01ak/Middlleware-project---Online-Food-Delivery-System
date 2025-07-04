@@ -1,9 +1,6 @@
 package com.foodieExpress.restaurant_service.model;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,12 +10,14 @@ import java.util.List;
 public class Order implements Serializable {
 
     @Id
+    @Column(name = "order_id")
     private String orderId;
     private String customerId;
     private String restaurantId;
     private String address;
 
     @ElementCollection
+    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"))
     private List<String> items;
     private String status;
 

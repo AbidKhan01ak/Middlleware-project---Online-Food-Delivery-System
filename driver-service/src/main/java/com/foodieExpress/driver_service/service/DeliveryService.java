@@ -1,7 +1,9 @@
 package com.foodieExpress.driver_service.service;
 
 import java.time.Instant;
+import java.util.List;
 
+import com.foodieExpress.driver_service.messaging.OrderAssignmentListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.foodieExpress.driver_service.model.Order;
@@ -17,13 +19,15 @@ public class DeliveryService {
     private static final Logger log = LoggerFactory.getLogger(MessageListener.class);
     
     private final StatusUpdatePublisher publisher;
+    private final OrderAssignmentListener assignmentListener;
 
-    public DeliveryService(StatusUpdatePublisher publisher) {
+    public DeliveryService(StatusUpdatePublisher publisher, OrderAssignmentListener assignmentListener) {
         this.publisher = publisher;
+        this.assignmentListener = assignmentListener;
     }
 
     public void assignOrder(Order order) {
-    // Logic for assigning order to driver (e.g., notify driver, save to DB, etc.)
+    // Already handled in listener
     System.out.println("Order assigned to driver: " + order);
     }
 
@@ -44,5 +48,9 @@ public class DeliveryService {
             case "En-route" -> publisher.sendOrderEnRoute(message);
             case "delivered" -> publisher.sendOrderDelivered(message);
         }
+    }
+
+    public List<Order> getAssignedOrders() {
+        return assignmentListener.getAssignedOrders();
     }
 }
