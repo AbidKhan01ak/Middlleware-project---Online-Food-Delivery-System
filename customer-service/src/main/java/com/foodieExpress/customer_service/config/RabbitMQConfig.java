@@ -12,10 +12,16 @@ public class RabbitMQConfig {
 
     public static final String EXCHANGE = "order.exchange";
     public static final String ROUTING_KEY_PLACED = "order.placed";
+    public static final String ORDER_STATUS_QUEUE = "order-status-updates";
 
     @Bean
     public TopicExchange exchange() {
         return new TopicExchange(EXCHANGE);
+    }
+
+    @Bean
+    public Queue orderStatusQueue() {
+        return new Queue(ORDER_STATUS_QUEUE, true); // durable = true
     }
 
     @Bean
@@ -52,6 +58,14 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(orderDeliveredQueue())
                 .to(exchange())
                 .with("order.delivered");
+    }
+
+     @Bean
+    public Binding orderStatusBinding() {
+        return BindingBuilder
+                .bind(orderStatusQueue())
+                .to(exchange())
+                .with("order.status"); // routing key must match
     }
 
     @Bean

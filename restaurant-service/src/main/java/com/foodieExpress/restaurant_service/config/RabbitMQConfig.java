@@ -33,8 +33,18 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue orderStatusQueue() {
+        return new Queue("order-status-updates");
+    }
+
+    @Bean
     public Queue orderDeliveredQueue() {
         return new Queue("order.delivered.queue", true);
+    }
+
+    @Bean
+    public Binding orderStatusBinding(Queue orderStatusQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(orderStatusQueue).to(exchange).with("order.status");
     }
 
     @Bean

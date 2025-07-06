@@ -5,10 +5,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.foodieExpress.customer_service.dto.OrderMessage;
 import org.springframework.stereotype.Service;
+import com.foodieExpress.customer_service.model.Order;
+import com.foodieExpress.customer_service.repository.OrderRepository;
+import java.util.Optional;
 
 @Service
 public class MessageListener {
     private static final Logger log = LoggerFactory.getLogger(MessageListener.class);
+
+    private final OrderRepository orderRepository;
+
+    public MessageListener(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
     
     @RabbitListener(queues = "order.ready.queue")
     public void handleOrderReady(OrderMessage message) {
@@ -25,4 +34,20 @@ public class MessageListener {
     public void handleDelivered(OrderMessage message) {
         log.info("Customer received: Order delivered for orderId: {}", message.getOrderId());
     }
+
+    @RabbitListener(queues = "order-status-updates")
+    public void handleOrderStatusUpdate(OrderMessage message) {
+    String orderId = message.getOrderId();
+    String newStatus = message.getStatus();
+
+    Optional<Order> orderOptional = orderRepository.findById(orderId);
+    if (orderOptional.isPresent()) {
+        Order order = orderOptional.get();
+        order.setStatus(newStatus);
+        orderRepository.save(order);
+        System.out.println("Order status updated to " + newStatus + " for Order ID " + orderId);
+    } else {
+        System.err.println("Order not found with ID: " + orderId);
+    }
+    }   
 }

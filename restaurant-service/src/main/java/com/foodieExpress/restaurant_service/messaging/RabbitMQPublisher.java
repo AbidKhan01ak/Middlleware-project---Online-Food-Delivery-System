@@ -20,4 +20,8 @@ public class RabbitMQPublisher {
     public void sendOrderDelivered(OrderMessage message) {
         rabbitTemplate.convertAndSend("order.exchange", "order.delivered.restaurant", message);
     }
+
+    public void sendOrderStatusUpdate(OrderMessage message) {
+        rabbitTemplate.convertAndSend("order.exchange", "order.status.update", message);
+    }
 }

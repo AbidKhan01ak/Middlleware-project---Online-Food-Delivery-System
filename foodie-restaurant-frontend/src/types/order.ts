@@ -1,4 +1,4 @@
-export type OrderStatus = "pending" | "accepted" | "rejected" | "prepared";
+export type OrderStatus = "PLACED" | "DELIVERED" | "ACCEPTED" | "PREPARED";
 
 export interface OrderItem {
   id: string;
@@ -9,12 +9,12 @@ export interface OrderItem {
 }
 
 export interface Order {
-  id: string;
-  customerName: string;
-  customerPhone?: string;
+  orderId: string;
+  customerId: string;
+  restaurantId: string;
+  address: string;
   items: OrderItem[];
-  total: number;
   status: OrderStatus;
-  orderTime: string;
-  estimatedTime?: number; // in minutes
+  restaurantName: string;
+  deliveryTime?: string;
 }

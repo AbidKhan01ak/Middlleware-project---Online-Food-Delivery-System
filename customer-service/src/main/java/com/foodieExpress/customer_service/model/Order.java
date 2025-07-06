@@ -26,6 +26,8 @@ public class Order implements Serializable {
     @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"))
     @Column(name = "item")
     private List<OrderItem> items;
+
+    @Column(name = "status")
     private String status;
 
     public Order() {}

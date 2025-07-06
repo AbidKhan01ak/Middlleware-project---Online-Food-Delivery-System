@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import com.foodieExpress.restaurant_service.messaging.RabbitMQPublisher;
 import org.springframework.web.bind.annotation.*;
 import com.foodieExpress.restaurant_service.dto.OrderMessage;
+import com.foodieExpress.restaurant_service.dto.OrderDTO;
+import com.foodieExpress.restaurant_service.dto.OrderItemDTO;
 
 import java.util.List;
 
@@ -29,9 +31,15 @@ public class OrderController {
     }
 
     @GetMapping("/accepted-orders")
-    public ResponseEntity<List<Order>> getAcceptedOrders() {
-        List<Order> acceptedOrders = orderService.getAcceptedOrders();
+    public ResponseEntity<List<OrderDTO>> getAcceptedOrders() {
+        List<OrderDTO> acceptedOrders = orderService.getAcceptedOrders();
         return ResponseEntity.ok(acceptedOrders);
+    }
+
+    @PostMapping("/accepted")
+    public ResponseEntity<String> markOrderAccepted(@RequestBody OrderMessage message) {
+        orderService.markOrderAccepted(message.getOrderId());
+        return ResponseEntity.ok("Order marked as accepted");
     }
 
     @PostMapping("/ready")
@@ -44,5 +52,10 @@ public class OrderController {
     public ResponseEntity<String> confirmDelivery(@RequestBody OrderMessage message) {
         orderService.confirmOrderDeliveredAndNotify(message.getOrderId());
         return ResponseEntity.ok("Order delivery confirmed to restaurant");
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 }

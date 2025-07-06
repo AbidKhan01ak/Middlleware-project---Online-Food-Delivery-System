@@ -1,71 +1,81 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { OrderCard } from "@/components/OrderCard";
-import { mockOrders } from "@/lib/mockData";
 import { Order, OrderStatus } from "@/types/order";
-
+import { markOrderAccepted, markOrderReady, getAllOrders } from "@/api";
 const Index = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  // Mock API call to fetch orders
   useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      // Simulating API call delay
-      setTimeout(() => {
-        setOrders(mockOrders);
+    const loadOrders = async () => {
+      try {
+        setLoading(true);
+        const fetchedOrders = await getAllOrders();
+        setOrders(fetchedOrders);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch orders.",
+          variant: "destructive",
+        });
+      } finally {
         setLoading(false);
-      }, 1000);
+      }
     };
-
-    fetchOrders();
+    loadOrders(); // initial load
+    const interval = setInterval(loadOrders, 10000); // poll every 10s
+    return () => clearInterval(interval);
   }, []);
 
   const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
     try {
-      // Mock API call - in real app, this would be:
-      // await axios.post(`/api/restaurant/order/${orderId}/status`, { status });
+      if (status === "PREPARED") {
+        await markOrderReady(orderId);
+      } else if (status === "ACCEPTED") {
+        await markOrderAccepted(orderId); // 👈 persist accept
+      }
 
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.id === orderId ? { ...order, status } : order
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.orderId === orderId ? { ...order, status } : order
         )
       );
 
-      const statusMessages = {
-        accepted: "Order accepted successfully!",
-        rejected: "Order rejected",
-        prepared: "Order marked as prepared!",
-      };
-
       toast({
         title: "Status Updated",
-        description: statusMessages[status],
+        description:
+          status === "PREPARED"
+            ? "Order marked as prepared"
+            : `Order marked as ${status}`,
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to update order status",
+        description: "Failed to update order status.",
         variant: "destructive",
       });
     }
   };
 
   const getOrderStats = () => {
-    const pending = orders.filter((order) => order.status === "pending").length;
     const accepted = orders.filter(
-      (order) => order.status === "accepted"
+      (order) => order.status === "ACCEPTED"
     ).length;
     const prepared = orders.filter(
-      (order) => order.status === "prepared"
+      (order) => order.status === "PREPARED"
+    ).length;
+    const delivered = orders.filter(
+      (order) => order.status === "DELIVERED"
     ).length;
 
-    return { pending, accepted, prepared };
+    return { accepted, prepared, delivered };
   };
 
   const stats = getOrderStats();
@@ -95,52 +105,53 @@ const Index = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="border-l-4 border-l-yellow-500">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Pending Orders
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-yellow-600">
-                {stats.pending}
-              </div>
-            </CardContent>
-          </Card>
+        <Card
+          onClick={() => navigate("/accepted-orders")}
+          className="border-l-4 border-l-green-500"
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-600">
+              Accepted Orders
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-green-600">
+              {stats.accepted}
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="border-l-4 border-l-green-500">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Accepted Orders
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-green-600">
-                {stats.accepted}
-              </div>
-            </CardContent>
-          </Card>
+        <Card className="border-l-4 border-l-blue-500">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-600">
+              Prepared Orders
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-blue-600">
+              {stats.prepared}
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="border-l-4 border-l-blue-500">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Prepared Orders
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-blue-600">
-                {stats.prepared}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <Card className="border-l-4 border-l-gray-500">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-600">
+              Delivered Orders
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-gray-600">
+              {stats.delivered}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Orders Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {orders.map((order) => (
             <OrderCard
-              key={order.id}
+              key={order.orderId}
               order={order}
               onUpdateStatus={updateOrderStatus}
             />

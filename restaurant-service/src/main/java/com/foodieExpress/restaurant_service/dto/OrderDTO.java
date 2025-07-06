@@ -1,46 +1,28 @@
-package com.foodieExpress.restaurant_service.model;
+package com.foodieExpress.restaurant_service.dto;
 
-import jakarta.persistence.*;
-
-import java.io.Serializable;
 import java.util.List;
 
-@Entity
-@Table(name = "restaurant_orders")
-public class Order implements Serializable {
-
-    @Id
-    @Column(name = "order_id")
+public class OrderDTO {
     private String orderId;
     private String customerId;
     private String restaurantId;
-    private String restaurantName;
-    @Column(name = "address")
     private String address;
-
-    @Column(name = "delivery_time")
-    @Temporal(TemporalType.TIMESTAMP)
+    private String restaurantName;
     private String deliveryTime;
-
-    @ElementCollection
-    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"))
-    @Column(name = "item")
-    private List<OrderItem> items;
-
-    @Column(name = "status")
+    private List<OrderItemDTO> items;
     private String status;
 
-    public Order(){}
+    public OrderDTO() {}
 
-    public Order(String orderId, String customerId, String restaurantId, String restaurantName, String address, List<OrderItem> items, String status, String deliveryTime) {
+    public OrderDTO(String orderId, String customerId, String restaurantId, String address, String restaurantName, String deliveryTime, List<OrderItemDTO> items, String status) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.restaurantId = restaurantId;
-        this.restaurantName = restaurantName;
         this.address = address;
+        this.restaurantName = restaurantName;
+        this.deliveryTime = deliveryTime;
         this.items = items;
         this.status = status;
-        this.deliveryTime = deliveryTime;
     }
 
     public String getOrderId() {
@@ -67,12 +49,6 @@ public class Order implements Serializable {
         this.restaurantId = restaurantId;
     }
 
-    public String getRestaurantName() {
-        return restaurantName;
-    }
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
-    }
     public String getAddress() {
         return address;
     }
@@ -81,11 +57,27 @@ public class Order implements Serializable {
         this.address = address;
     }
 
-    public List<OrderItem> getItems() {
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+    }
+
+    public String getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(String deliveryTime) {
+        this.deliveryTime = deliveryTime;
+    }
+
+    public List<OrderItemDTO> getItems() {
         return items;
     }
 
-    public void setItems(List<OrderItem> items) {
+    public void setItems(List<OrderItemDTO> items) {
         this.items = items;
     }
 
@@ -97,11 +89,5 @@ public class Order implements Serializable {
         this.status = status;
     }
 
-    public String getDeliveryTime() {
-    return deliveryTime;
-}
-
-    public void setDeliveryTime(String deliveryTime) {
-        this.deliveryTime = deliveryTime;
-    }
+    
 }

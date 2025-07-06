@@ -25,10 +25,14 @@ export const fetchAcceptedOrders = async () => {
     return response.data;
 };
 
+export const markOrderAccepted = async (orderId) => {
+    const response = await api.post('/accepted', { orderId });
+    return response.data;
+};
 // Mark an order as ready (fetch order from DB and send only orderId)
 export const markOrderReady = async (orderId) => {
     const response = await api.post('/ready', {
-        orderId: orderId
+        orderId
     });
     return response.data;
 };
@@ -36,8 +40,18 @@ export const markOrderReady = async (orderId) => {
 // Confirm that an order was delivered
 export const confirmOrderDelivered = async (orderId) => {
     const response = await api.post('/delivered', {
-        orderId: orderId
+        orderId
     });
+    return response.data;
+};
+
+export const getAllOrders = async () => {
+    const response = await api.get('/orders');
+    return response.data;
+};
+
+export const sendOrderToRestaurant = async (orderData) => {
+    const response = await api.post('/orders', orderData);
     return response.data;
 };
 
