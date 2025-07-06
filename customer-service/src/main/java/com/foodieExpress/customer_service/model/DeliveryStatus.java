@@ -1,20 +1,43 @@
 package com.foodieExpress.customer_service.model;
 
 public class DeliveryStatus {
+
     private String orderId;
+    private String customerId;
+    private String restaurantId;
     private String status;
-    
-    public DeliveryStatus(String orderId, String status) {
+
+    public DeliveryStatus() {}
+
+    public DeliveryStatus(String orderId, String customerId, String restaurantId, String status) {
         this.orderId = orderId;
+        this.customerId = customerId;
+        this.restaurantId = restaurantId;
         this.status = status;
     }
-    
+
     public String getOrderId() {
         return orderId;
     }
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
     public String getStatus() {
@@ -29,6 +52,8 @@ public class DeliveryStatus {
     public String toString() {
         return "DeliveryStatus{" +
                 "orderId='" + orderId + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", restaurantId='" + restaurantId + '\'' +
                 ", status='" + status + '\'' +
                 '}';
     }

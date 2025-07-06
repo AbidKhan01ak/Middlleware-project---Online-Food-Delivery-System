@@ -39,7 +39,7 @@ public class OrderService {
 
     public DeliveryStatus getStatus(String orderId) {
         return orderRepository.findByOrderId(orderId)
-                .map(order -> new DeliveryStatus(order.getOrderId(), order.getStatus()))
+                .map(order -> new DeliveryStatus(order.getOrderId(), order.getStatus(), order.getRestaurantId(), order.getCustomerId()))
                 .orElse(new DeliveryStatus(orderId, "No updates yet!"));
     }
 }

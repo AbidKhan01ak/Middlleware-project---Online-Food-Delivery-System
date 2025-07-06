@@ -4,6 +4,7 @@ import { placeOrder, trackOrder, getOrderStatus } from "../api";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { restaurants } from "../lib/mockData"; // Assuming this is where your restaurant data is stored
 
 interface OrderStatus {
   id: string;
@@ -29,13 +30,14 @@ const TrackOrder = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const [orderStatus, setOrderStatus] = useState<OrderStatus | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [count, setCount] = useState(40); // For simulating estimated delivery time
   useEffect(() => {
     if (orderId) {
       fetchOrderStatus(orderId);
       // Poll for updates every 3 seconds
       const interval = setInterval(() => {
         fetchOrderStatus(orderId);
+        setCount((prevCount) => (prevCount > 0 ? prevCount - 1 : 0));
       }, 3000);
 
       return () => clearInterval(interval);
@@ -48,18 +50,24 @@ const TrackOrder = () => {
 
       const mappedOrder: OrderStatus = {
         id: data.id?.toString() || id,
-        status: data?.status?.toLowerCase() ?? "placed", // Assuming enum like DELIVERED, map to lowercase
+        status: data.status, // Assuming enum like DELIVERED, map to lowercase
         estimatedDeliveryTime: new Date(
           data.estimatedDeliveryTime
-        ).toLocaleTimeString(),
+        ).toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        }),
         items: (data.items ?? []).map((item: any) => ({
           name: item.name ?? "Item",
           quantity: item.quantity ?? 1,
           price: item.price ?? 0,
         })),
         totalAmount: data.totalAmount ?? 0,
-        deliveryAddress: data.deliveryAddress ?? "Unknown Address",
-        restaurantName: data.restaurant?.name ?? "Unknown Restaurant", // Assuming nested restaurant object
+        deliveryAddress: data.deliveryAddress ?? "210, Gandhi Nagar, Bangalore",
+        restaurantName:
+          restaurants.find((r) => r.id === data.restaurantId)?.name ??
+          "Unknown", // Assuming nested restaurant object
       };
 
       setOrderStatus(mappedOrder);

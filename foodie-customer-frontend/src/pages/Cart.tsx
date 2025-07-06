@@ -9,8 +9,14 @@ const DELIVERY_FEE = 30;
 const TAX_RATE = 0.08;
 
 const Cart = () => {
-  const { items, updateQuantity, removeItem, getTotalPrice, clearCart } =
-    useCart();
+  const {
+    items,
+    updateQuantity,
+    restaurantName,
+    removeItem,
+    getTotalPrice,
+    clearCart,
+  } = useCart();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -23,11 +29,12 @@ const Cart = () => {
       const orderData = {
         customerId: "cust001", // TODO: Replace with dynamic customer ID
         restaurantId: items[0].restaurantId || "rest001", // Assuming all items are from the same restaurant
+        restaurantName: restaurantName || "Unknown",
         items: items.map((item) => item.name), // only names expected by backend
       };
 
       const response = await placeOrder(orderData);
-      const orderId = response.id || "unknown";
+      const orderId = response.orderId || "unknown";
 
       clearCart();
       navigate(`/track-order/${orderId}`);
