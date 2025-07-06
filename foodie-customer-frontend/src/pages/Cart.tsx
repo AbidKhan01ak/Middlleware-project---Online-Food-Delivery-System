@@ -20,6 +20,10 @@ const Cart = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const subtotal = getTotalPrice();
+  const tax = subtotal * TAX_RATE;
+  const total = subtotal + DELIVERY_FEE + tax;
+
   const handlePlaceOrder = async () => {
     if (items.length === 0) return;
 
@@ -28,9 +32,21 @@ const Cart = () => {
 
       const orderData = {
         customerId: "cust001", // TODO: Replace with dynamic customer ID
-        restaurantId: items[0].restaurantId || "rest001", // Assuming all items are from the same restaurant
-        restaurantName: restaurantName || "Unknown",
-        items: items.map((item) => item.name), // only names expected by backend
+        restaurantId: items[0].restaurantId,
+        restaurantName: items[0].restaurantName,
+        estimatedDeliveryTime: new Date(
+          Date.now() + 30 * 60 * 1000
+        ).toISOString(),
+        tax,
+        deliveryFee: DELIVERY_FEE,
+        totalPrice: total,
+        items: items.map((item) => ({
+          itemId: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          totalPrice: item.quantity * item.price,
+        })),
       };
 
       const response = await placeOrder(orderData);
@@ -70,10 +86,6 @@ const Cart = () => {
       </div>
     );
   }
-
-  const subtotal = getTotalPrice();
-  const tax = subtotal * TAX_RATE;
-  const total = subtotal + DELIVERY_FEE + tax;
 
   return (
     <div className="min-h-screen bg-gray-50">

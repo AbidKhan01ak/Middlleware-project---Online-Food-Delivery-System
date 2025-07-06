@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { placeOrder, trackOrder, getOrderStatus } from "../api";
+import {
+  placeOrder,
+  trackOrder,
+  getOrderStatus,
+  getOrderDetails,
+} from "../api";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,14 +35,12 @@ const TrackOrder = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const [orderStatus, setOrderStatus] = useState<OrderStatus | null>(null);
   const [loading, setLoading] = useState(true);
-  const [count, setCount] = useState(40); // For simulating estimated delivery time
   useEffect(() => {
     if (orderId) {
       fetchOrderStatus(orderId);
       // Poll for updates every 3 seconds
       const interval = setInterval(() => {
         fetchOrderStatus(orderId);
-        setCount((prevCount) => (prevCount > 0 ? prevCount - 1 : 0));
       }, 3000);
 
       return () => clearInterval(interval);
@@ -46,34 +49,35 @@ const TrackOrder = () => {
 
   const fetchOrderStatus = async (id: string) => {
     try {
-      const data = await trackOrder(id); // this uses POST internally
+      const [statusData, detailsData] = await Promise.all([
+        trackOrder(id), // status + maybe ETA
+        getOrderDetails(id), // restaurantName, items, totalPrice, etc.
+      ]);
 
       const mappedOrder: OrderStatus = {
-        id: data.id?.toString() || id,
-        status: data.status, // Assuming enum like DELIVERED, map to lowercase
+        id: id,
+        status: statusData.status?.toLowerCase() || "placed",
         estimatedDeliveryTime: new Date(
-          data.estimatedDeliveryTime
+          statusData.estimatedDeliveryTime ?? Date.now() + 30 * 60 * 1000 // Default to 30 minutes from now
         ).toLocaleTimeString([], {
           hour: "numeric",
           minute: "2-digit",
           hour12: true,
         }),
-        items: (data.items ?? []).map((item: any) => ({
+        items: (detailsData.items ?? []).map((item: any) => ({
           name: item.name ?? "Item",
           quantity: item.quantity ?? 1,
           price: item.price ?? 0,
         })),
-        totalAmount: data.totalAmount ?? 0,
-        deliveryAddress: data.deliveryAddress ?? "210, Gandhi Nagar, Bangalore",
-        restaurantName:
-          restaurants.find((r) => r.id === data.restaurantId)?.name ??
-          "Unknown", // Assuming nested restaurant object
+        totalAmount: detailsData.totalPrice ?? 0,
+        deliveryAddress: detailsData.address ?? "210, Gandhi Nagar, Bengaluru",
+        restaurantName: detailsData.restaurantName ?? "Unknown",
       };
 
       setOrderStatus(mappedOrder);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching order status:", error);
+      console.error("Error fetching order details:", error);
       setLoading(false);
     }
   };

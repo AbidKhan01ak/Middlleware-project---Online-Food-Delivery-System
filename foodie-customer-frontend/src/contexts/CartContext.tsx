@@ -35,8 +35,8 @@ interface CartContextType {
   clearCart: () => void;
   getTotalPrice: () => number;
   getTotalItems: () => number;
-  restaurantId: string | null;
-  restaurantName: string | null;
+  restaurantId: string;
+  restaurantName: string;
 }
 
 const STORAGE_KEY = "foodie-cart";

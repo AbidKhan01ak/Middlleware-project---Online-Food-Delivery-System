@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -16,33 +17,47 @@ public class Order implements Serializable {
     private String orderId;
     private String customerId;
     private String restaurantId;
-    private String address;
 
+    @Column
+    private String restaurantName;
+    private String address;
+    private double totalPrice;
     @ElementCollection
     @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"))
     @Column(name = "item")
-    private List<String> items;
+    private List<OrderItem> items;
     private String status;
 
     public Order() {}
 
-    public Order(String orderId, String customerId, String restaurantId, String address, List<String> items, String status) {
+    public Order(String orderId, String customerId, String restaurantId, String restaurantName, String address, double totalPrice, List<OrderItem> items, String status) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.restaurantId = restaurantId;
+        this.restaurantName = restaurantName;
         this.address = address;
+        this.totalPrice = totalPrice;
         this.items = items;
         this.status = status;
     }
 
     public static Order fromRequest(OrderRequest request){
+        List<OrderItem> orderItems = request.getItems().stream()
+        .map(dto -> new OrderItem(dto.getItemId(), dto.getName(), dto.getQuantity(), dto.getPrice()))
+        .collect(Collectors.toList());
+
+        double totalPrice = request.getItems().stream()
+        .mapToDouble(item -> item.getPrice() * item.getQuantity())
+        .sum();
         return new Order(
                 UUID.randomUUID().toString(),
                 request.getCustomerId(),
                 request.getRestaurantId(),
+                request.getRestaurantName(),
                 request.getAddress(),
-                request.getItems(),
-                "PLACED"
+                totalPrice,
+                orderItems,
+                "PLACED"       
         );
     }
 
@@ -70,6 +85,14 @@ public class Order implements Serializable {
         this.restaurantId = restaurantId;
     }
 
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -78,11 +101,19 @@ public class Order implements Serializable {
         this.address = address;
     }
 
-    public List<String> getItems() {
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public List<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<String> items) {
+    public void setItems(List<OrderItem> items) {
         this.items = items;
     }
 
