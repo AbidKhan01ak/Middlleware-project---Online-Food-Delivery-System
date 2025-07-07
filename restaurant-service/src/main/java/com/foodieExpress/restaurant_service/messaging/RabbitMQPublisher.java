@@ -22,6 +22,8 @@ public class RabbitMQPublisher {
     }
 
     public void sendOrderStatusUpdate(OrderMessage message) {
+        System.out.println("Publishing status update to order-status-updates queue: " + message.getOrderId() + " with status: " + message.getStatus());
+
         rabbitTemplate.convertAndSend("order.exchange", "order.status", message);
     }
 }

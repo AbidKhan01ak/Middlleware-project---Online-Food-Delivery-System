@@ -3,22 +3,37 @@ package com.foodieExpress.driver_service.model;
 import java.io.Serializable;
 import java.util.List;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "restaurant_orders")
 public class Order implements Serializable {
 
+    @Id
+    @Column(name = "order_id")
     private String orderId;
-    private String customerName;
+    private String customerId;
     private String restaurantName;
-    private List<String> items;
-    private String deliveryAddress;
+
+    @ElementCollection
+    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
+    private List<OrderItem> items;
+    private String status;
 
     public Order(){}
 
-    public Order(String orderId, String customerName, String restaurantName, List<String> items, String deliveryAddress) {
+    public Order(String orderId, String customerId, String restaurantName, List<OrderItem> items, String status) {
         this.orderId = orderId;
-        this.customerName = customerName;
+        this.customerId = customerId;
         this.restaurantName = restaurantName;
         this.items = items;
-        this.deliveryAddress = deliveryAddress;
+        this.status = status;
     }
 
     public String getOrderId() {
@@ -29,12 +44,12 @@ public class Order implements Serializable {
         this.orderId = orderId;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public String getRestaurantName() {
@@ -45,19 +60,19 @@ public class Order implements Serializable {
         this.restaurantName = restaurantName;
     }
 
-    public List<String> getItems() {
+    public List<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<String> items) {
+    public void setItems(List<OrderItem> items) {
         this.items = items;
     }
 
-    public String getDeliveryAddress() {
-        return deliveryAddress;
+    public String getStatus() {
+        return status;
     }
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

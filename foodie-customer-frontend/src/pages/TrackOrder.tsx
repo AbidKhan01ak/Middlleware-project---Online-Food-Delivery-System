@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import {
-  placeOrder,
-  trackOrder,
-  getOrderStatus,
-  getOrderDetails,
-} from "../api";
+import { trackOrder, getOrderDetails } from "../api";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { restaurants } from "../lib/mockData"; // Assuming this is where your restaurant data is stored
 
 interface OrderStatus {
   id: string;
@@ -54,8 +48,37 @@ const TrackOrder = () => {
           getOrderDetails(orderId),
         ]);
 
-        const backendStatus = statusData.status?.toLowerCase() || "placed";
+        let backendStatusRaw = statusData.status?.toLowerCase() || "PLACED";
+        let backendStatus: OrderStatus["status"];
 
+        switch (backendStatusRaw) {
+          case "PLACED":
+          case "placed":
+            backendStatus = "placed";
+            break;
+          case "ACCEPTED":
+          case "accepted":
+            backendStatus = "accepted";
+            break;
+          case "PREPARED":
+          case "prepared":
+          case "READY":
+          case "ready": // 👈 maps to "ready_for_pickup"
+            backendStatus = "ready_for_pickup";
+            break;
+          case "PICKED_UP":
+          case "picked_up":
+            backendStatus = "out_for_delivery";
+            break;
+          case "DELIVERED":
+          case "delivered":
+            backendStatus = "delivered";
+            break;
+          default:
+            backendStatus = "placed";
+        }
+        console.log("Backend status:", statusData.status);
+        console.log("Mapped backend status:", backendStatusRaw);
         // Set simulated "preparing" after 15s if accepted
         if (
           backendStatus === "accepted" &&

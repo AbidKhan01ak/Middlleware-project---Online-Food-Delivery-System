@@ -22,7 +22,7 @@ export const getOrderDetails = async (orderId) => {
     const response = await axios.get(`${BASE_URL}/orders/status/${orderId}`);
     return response.data;
 };
-// 📩 Fetch order updates (optional if polling)
+// 📩 Fetch order updates
 export const getOrderStatus = async (orderId) => {
     const response = await axios.post(`${BASE_URL}/customer/status`, { orderId });
     return response.data;

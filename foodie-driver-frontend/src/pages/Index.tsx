@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { fetchAssignedOrders, updateDeliveryStatus } from "@/api";
 import {
   Truck,
   MapPin,
@@ -11,7 +12,6 @@ import {
   Navigation,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import axios from "axios";
 
 interface Order {
   id: string;
@@ -30,40 +30,6 @@ const Index = () => {
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Mock data for demonstration since we don't have a real API
-  const mockOrders: Order[] = [
-    {
-      id: "1",
-      customerName: "John Smith",
-      customerAddress: "123 Main St, Downtown",
-      items: ["Burger Deluxe", "Fries", "Coke"],
-      totalAmount: 24.99,
-      status: "assigned",
-      orderTime: "2:30 PM",
-      estimatedDeliveryTime: "3:15 PM",
-    },
-    {
-      id: "2",
-      customerName: "Sarah Johnson",
-      customerAddress: "456 Oak Ave, Uptown",
-      items: ["Pizza Margherita", "Garlic Bread"],
-      totalAmount: 18.5,
-      status: "picked_up",
-      orderTime: "2:45 PM",
-      estimatedDeliveryTime: "3:30 PM",
-    },
-    {
-      id: "3",
-      customerName: "Mike Davis",
-      customerAddress: "789 Pine Rd, Midtown",
-      items: ["Chicken Tikka", "Rice", "Naan"],
-      totalAmount: 32.0,
-      status: "en_route",
-      orderTime: "3:00 PM",
-      estimatedDeliveryTime: "3:45 PM",
-    },
-  ];
-
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -71,10 +37,8 @@ const Index = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      // In a real app, this would be: const response = await axios.get('/api/driver/orders');
-      // For now, we'll simulate the API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setOrders(mockOrders);
+      const response = await fetchAssignedOrders();
+      setOrders(response.data);
       console.log("Orders fetched successfully");
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -91,13 +55,7 @@ const Index = () => {
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
       setUpdatingStatus(orderId);
-      console.log(`Updating order ${orderId} to status: ${newStatus}`);
-
-      // In a real app, this would be:
-      // await axios.post(`/api/driver/order/${orderId}/status`, { status: newStatus });
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await updateDeliveryStatus({ orderId, status: newStatus });
 
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
@@ -254,12 +212,12 @@ const Index = () => {
                   <Badge
                     className={`${getStatusColor(order.status)} text-white`}
                   >
-                    <div className="flex items-center space-x-1">
+                    <span className="flex items-center space-x-1">
                       {getStatusIcon(order.status)}
                       <span className="capitalize">
                         {order.status.replace("_", " ")}
                       </span>
-                    </div>
+                    </span>
                   </Badge>
                 </div>
               </CardHeader>
@@ -290,7 +248,7 @@ const Index = () => {
                   <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-200">
                     <span className="text-sm text-gray-600">Total:</span>
                     <span className="font-semibold text-gray-900">
-                      ${order.totalAmount.toFixed(2)}
+                      ${order.totalAmount}
                     </span>
                   </div>
                 </div>

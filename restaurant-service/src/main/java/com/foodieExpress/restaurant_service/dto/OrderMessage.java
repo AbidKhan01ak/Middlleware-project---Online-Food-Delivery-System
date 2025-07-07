@@ -5,7 +5,7 @@ public class OrderMessage {
     private String orderId;
     private String customerId;
     private String restaurantId;
-    private String status;  // e.g., placed, accepted, ready, etc.
+    private String status;
     private String timestamp;
     private String address;
     private String deliveryTime;

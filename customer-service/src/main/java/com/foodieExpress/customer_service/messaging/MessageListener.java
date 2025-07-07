@@ -37,7 +37,6 @@ public class MessageListener {
 
     @RabbitListener(queues = "order-status-updates")
     public void handleOrderStatusUpdate(OrderMessage message) {
-        log.info("Awaiting order status update messages...");
         String orderId = message.getOrderId();
         String newStatus = message.getStatus();
 

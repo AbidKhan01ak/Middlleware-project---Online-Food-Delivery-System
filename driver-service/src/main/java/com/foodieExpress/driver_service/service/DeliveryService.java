@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.foodieExpress.driver_service.model.Order;
 import com.foodieExpress.driver_service.messaging.StatusUpdatePublisher;
 import com.foodieExpress.driver_service.model.DeliveryStatus;
+import com.foodieExpress.driver_service.Repository.OrderRepository;
 import com.foodieExpress.driver_service.dto.OrderMessage;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,12 @@ public class DeliveryService {
     
     private final StatusUpdatePublisher publisher;
     private final OrderAssignmentListener assignmentListener;
+    private final OrderRepository orderRepository;
 
-    public DeliveryService(StatusUpdatePublisher publisher, OrderAssignmentListener assignmentListener) {
+    public DeliveryService(StatusUpdatePublisher publisher, OrderAssignmentListener assignmentListener, OrderRepository orderRepository) {
         this.publisher = publisher;
         this.assignmentListener = assignmentListener;
+        this.orderRepository = orderRepository;
     }
 
     public void assignOrder(Order order) {
@@ -51,6 +54,6 @@ public class DeliveryService {
     }
 
     public List<Order> getAssignedOrders() {
-        return assignmentListener.getAssignedOrders();
+        return orderRepository.findByStatusIgnoreCase("ready");
     }
 }

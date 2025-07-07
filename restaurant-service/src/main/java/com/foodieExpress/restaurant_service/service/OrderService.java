@@ -65,6 +65,19 @@ public class OrderService {
         message.setStatus("ACCEPTED");
         publisher.sendOrderStatusUpdate(message);
     }
+    public void markOrderAsPrepared(String orderId) {
+        Order order = repository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+        
+        order.setStatus("ready");
+        repository.save(order);
+
+        // Notify customer service
+        OrderMessage orderMessage = new OrderMessage();
+        orderMessage.setOrderId(orderId);
+        orderMessage.setStatus("READY");
+        publisher.sendOrderStatusUpdate(orderMessage);
+    }
 
     public void markOrderReadyAndNotify(String orderId) {
         Order order = repository.findById(orderId)
@@ -82,7 +95,7 @@ public class OrderService {
         message.setAddress(order.getAddress());
         message.setDeliveryTime(order.getDeliveryTime());
 
-        publisher.sendOrderReady(message);
+        publisher.sendOrderStatusUpdate(message);
     }
 
     public void confirmOrderDeliveredAndNotify(String orderId) {

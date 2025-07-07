@@ -58,4 +58,10 @@ public class OrderController {
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
+
+    @PutMapping("/orders/prepared/{orderId}")
+    public ResponseEntity<String> markOrderAsPrepared(@PathVariable String orderId) {
+        orderService.markOrderAsPrepared(orderId);
+        return ResponseEntity.ok("Order marked as prepared");
+    }
 }

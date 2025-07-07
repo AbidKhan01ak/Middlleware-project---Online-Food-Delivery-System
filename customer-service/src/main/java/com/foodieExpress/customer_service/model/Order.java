@@ -27,7 +27,6 @@ public class Order implements Serializable {
     @Column(name = "item")
     private List<OrderItem> items;
 
-    @Column(name = "status")
     private String status;
 
     public Order() {}
