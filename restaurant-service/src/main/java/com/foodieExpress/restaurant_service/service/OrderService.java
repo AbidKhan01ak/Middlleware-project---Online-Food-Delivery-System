@@ -25,7 +25,7 @@ public class OrderService {
 
     public Order acceptOrder(String orderId) {
         Order order = repository.findById(orderId).orElseThrow();
-        order.setStatus("Accepted");
+        order.setStatus("ACCEPTED");
         repository.save(order);
 
         // NEW: Publish message to customer-service
@@ -33,7 +33,7 @@ public class OrderService {
         orderMessage.setOrderId(String.valueOf(order.getOrderId()));
         orderMessage.setCustomerId(String.valueOf(order.getCustomerId()));
         orderMessage.setRestaurantId(String.valueOf(order.getRestaurantId()));
-        orderMessage.setStatus("Accepted");
+        orderMessage.setStatus("ACCEPTED");
         orderMessage.setTimestamp(Instant.now().toString());
         orderMessage.setAddress(order.getAddress());
         orderMessage.setDeliveryTime(order.getDeliveryTime());

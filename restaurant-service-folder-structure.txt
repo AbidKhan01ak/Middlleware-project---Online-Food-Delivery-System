@@ -1,0 +1,46 @@
+restaurant-service
+ |
+ ├── src/
+ │   └── main/
+ │       ├── java/com/foodieExpress/restaurant_service/
+ │       │
+ │       ├── config/
+ │       │   ├── RabbitMQConfig.java
+ │       │   └── WebConfig.java
+ │       │
+ │       ├── controller/
+ │       │   └── OrderController.java
+ │       │
+ │       ├── dto/
+ │       │   ├── OrderDTO.java
+ │       │   ├── OrderItemDTO.java
+ │       │   └── OrderMessage.java
+ │       │
+ │       ├── messaging/
+ │       │   ├── MessageListener.java
+ │       │   ├── OrderListener.java
+ │       │   └── RabbitMQPublisher.java
+ │       │
+ │       ├── model/
+ │       │   ├── Order.java
+ │       │   └── OrderItem.java
+ │       │
+ │       ├── repository/
+ │       │   └── OrderRepository.java
+ │       │
+ │       ├── service/
+ │       │   └── OrderService.java
+ │       │
+ │       └── RestaurantServiceApplication.java
+ │
+ │       └── resources/
+ │           └── application.yml
+ │
+ ├── test/java/com/foodieExpress/restaurant_service/
+ │   └── RestaurantServiceApplicationTests.java
+ │
+ ├── .gitattributes
+ ├── .gitignore
+ ├── mvnw
+ ├── mvnw.cmd
+ └── pom.xml

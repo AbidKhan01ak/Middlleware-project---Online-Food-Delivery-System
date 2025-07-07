@@ -10,6 +10,7 @@ interface OrderCardProps {
 }
 
 export const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
+  const normalizedStatus = order.status.toUpperCase() as OrderStatus;
   const getStatusColor = (status: OrderStatus) => {
     switch (status) {
       case "ACCEPTED":
@@ -62,8 +63,8 @@ export const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
             )}
           </div>
           {/* 🔖 Status */}
-          <Badge className={`${getStatusColor(order.status)} capitalize`}>
-            {order.status}
+          <Badge className={`${getStatusColor(normalizedStatus)} capitalize`}>
+            {normalizedStatus}
           </Badge>
         </div>
       </CardHeader>
@@ -89,7 +90,7 @@ export const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
 
         {/* Action Buttons */}
         <div className="pt-2 space-y-2">
-          {order.status === "PLACED" && (
+          {normalizedStatus === "PLACED" && (
             <div className="flex gap-2">
               <Button
                 onClick={() => onUpdateStatus(order.orderId, "ACCEPTED")}
@@ -100,7 +101,7 @@ export const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
             </div>
           )}
 
-          {order.status === "ACCEPTED" && (
+          {normalizedStatus === "ACCEPTED" && (
             <Button
               onClick={() => onUpdateStatus(order.orderId, "PREPARED")}
               className="w-full bg-blue-600 hover:bg-blue-700"
@@ -109,14 +110,14 @@ export const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
             </Button>
           )}
 
-          {order.status === "PREPARED" && (
+          {["PREPARED", "READY"].includes(normalizedStatus) && (
             <div className="text-center py-2">
               <span className="text-green-600 font-medium">
                 ✓ Ready for pickup
               </span>
             </div>
           )}
-          {order.status === "DELIVERED" && (
+          {normalizedStatus === "DELIVERED" && (
             <div className="text-center py-2">
               <span className="text-gray-600 font-medium">
                 ✓ Order Delivered

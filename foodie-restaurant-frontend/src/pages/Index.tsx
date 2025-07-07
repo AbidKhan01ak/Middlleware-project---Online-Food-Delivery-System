@@ -66,13 +66,15 @@ const Index = () => {
 
   const getOrderStats = () => {
     const accepted = orders.filter(
-      (order) => order.status === "ACCEPTED"
+      (order) => order.status?.toUpperCase() === "ACCEPTED"
     ).length;
     const prepared = orders.filter(
-      (order) => order.status === "PREPARED"
+      (order) =>
+        order.status?.toUpperCase() === "PREPARED" ||
+        order.status?.toUpperCase() === "READY"
     ).length;
     const delivered = orders.filter(
-      (order) => order.status === "DELIVERED"
+      (order) => order.status?.toUpperCase() === "DELIVERED"
     ).length;
 
     return { accepted, prepared, delivered };
@@ -107,7 +109,7 @@ const Index = () => {
         {/* Stats Cards */}
         <Card
           onClick={() => navigate("/accepted-orders")}
-          className="border-l-4 border-l-green-500"
+          className="border-l-4 mb-10 border-l-green-500"
         >
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-gray-600">
@@ -121,7 +123,10 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-blue-500">
+        <Card
+          onClick={() => navigate("/prepared-orders")}
+          className="border-l-4 mb-10 border-l-blue-500"
+        >
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-gray-600">
               Prepared Orders
@@ -134,7 +139,10 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-gray-500">
+        <Card
+          onClick={() => navigate("/delivered-orders")}
+          className="border-l-4 border-l-gray-500"
+        >
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-gray-600">
               Delivered Orders
