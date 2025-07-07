@@ -1,0 +1,32 @@
+middleware-service
+  |
+ ├── src/
+ │   └── main/
+ │       ├── java/com/foodieExpress/middleware_service/
+ │       │
+ │       ├── config/
+ │       │   └── RabbitMQConfig.java
+ │       │
+ │       ├── controller/
+ │       │   └── HealthController.java
+ │       │
+ │       ├── dto/
+ │       │   └── OrderMessage.java
+ │       │
+ │       ├── messaging/
+ │       │   ├── MessageListener.java
+ │       │   └── MessagePublisher.java
+ │       │
+ │       └── MiddlewareServiceApplication.java
+ │
+ │       └── resources/
+ │           └── application.yml
+ │
+ ├── test/java/com/foodieExpress/middleware_service/
+ │   └── MiddlewareServiceApplicationTests.java
+ │
+ ├── .gitattributes
+ ├── .gitignore
+ ├── mvnw
+ ├── mvnw.cmd
+ └── pom.xml

@@ -8,6 +8,7 @@ import com.foodieExpress.customer_service.service.OrderService;
 
 import java.time.LocalDateTime;
 
+import java.util.Map;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +54,14 @@ public class OrderController {
         System.out.println("Received status update from driver: " + status);
         return ResponseEntity.ok("Customer notified of delivery status");
     }
-
+    @GetMapping("/status-only/{orderId}")
+        public ResponseEntity<?> getOrderStatusOnly(@PathVariable String orderId) {
+        Order order = orderService.getOrderById(orderId);
+        if (order == null) {
+            return ResponseEntity.status(404).body(Map.of("error", "Order not found"));
+        }
+        return ResponseEntity.ok(Map.of("status", order.getStatus()));
+    }
     @GetMapping("/status/{orderId}")
     public ResponseEntity<OrderResponse> getOrderStatus(@PathVariable String orderId) {
     Order order = orderService.getOrderById(orderId);

@@ -1,0 +1,39 @@
+foodie-driver-frontend
+│
+├── public/
+│   └── vite.svg
+│
+├── src/
+│   ├── components/ui/
+│   │
+│   ├── hooks/
+│   │   ├── use-mobile.tsx
+│   │   └── use-toast.ts
+│   │
+│   ├── lib/
+│   │   └── utils.ts
+│   │
+│   ├── pages/
+│   │   ├── Index.tsx
+│   │   └── NotFound.tsx
+│   │
+│   ├── App.css
+│   ├── App.tsx
+│   ├── api.js
+│   ├── index.css
+│   ├── main.tsx
+│   └── vite-env.d.ts
+│
+├── .gitignore
+├── README.md
+├── components.json
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── tailwind.config.ts
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.js

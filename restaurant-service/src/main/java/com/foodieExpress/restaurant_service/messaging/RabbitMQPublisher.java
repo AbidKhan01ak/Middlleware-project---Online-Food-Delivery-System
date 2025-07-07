@@ -22,6 +22,6 @@ public class RabbitMQPublisher {
     }
 
     public void sendOrderStatusUpdate(OrderMessage message) {
-        rabbitTemplate.convertAndSend("order.exchange", "order.status.update", message);
+        rabbitTemplate.convertAndSend("order.exchange", "order.status", message);
     }
 }

@@ -23,13 +23,21 @@ public class OrderService {
         this.publisher = publisher;
     }
 
-    public Order acceptOrder(Long orderId) {
+    public Order acceptOrder(String orderId) {
         Order order = repository.findById(orderId).orElseThrow();
         order.setStatus("Accepted");
         repository.save(order);
 
         // NEW: Publish message to customer-service
-        OrderMessage orderMessage = new OrderMessage(order.getId(), "Accepted", order.getCustomerId());
+        OrderMessage orderMessage = new OrderMessage();
+        orderMessage.setOrderId(String.valueOf(order.getOrderId()));
+        orderMessage.setCustomerId(String.valueOf(order.getCustomerId()));
+        orderMessage.setRestaurantId(String.valueOf(order.getRestaurantId()));
+        orderMessage.setStatus("Accepted");
+        orderMessage.setTimestamp(Instant.now().toString());
+        orderMessage.setAddress(order.getAddress());
+        orderMessage.setDeliveryTime(order.getDeliveryTime());
+
         publisher.sendOrderStatusUpdate(orderMessage);  // via RabbitMQ
 
         return order;
@@ -46,12 +54,16 @@ public class OrderService {
     }
 
     public void markOrderAccepted(String orderId) {
-        Optional<Order> optionalOrder = repository.findById(orderId);
-    if (optionalOrder.isPresent()) {
-        Order order = optionalOrder.get();
-        order.setStatus("ACCEPTED");
+        Order order = repository.findById(orderId)
+        .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setStatus("accepted");
         repository.save(order);
-    }
+
+        // Notify customer-service
+        OrderMessage message = new OrderMessage();
+        message.setOrderId(orderId);
+        message.setStatus("ACCEPTED");
+        publisher.sendOrderStatusUpdate(message);
     }
 
     public void markOrderReadyAndNotify(String orderId) {
@@ -62,9 +74,9 @@ public class OrderService {
         repository.save(order);
 
         OrderMessage message = new OrderMessage();
-        message.setOrderId(order.getOrderId());
-        message.setCustomerId(order.getCustomerId());
-        message.setRestaurantId(order.getRestaurantId());
+        message.setOrderId(String.valueOf(order.getOrderId()));
+        message.setCustomerId(String.valueOf(order.getCustomerId()));
+        message.setRestaurantId(String.valueOf(order.getRestaurantId()));
         message.setStatus("READY");
         message.setTimestamp(Instant.now().toString());
         message.setAddress(order.getAddress());
@@ -81,9 +93,9 @@ public class OrderService {
         repository.save(order);
 
         OrderMessage message = new OrderMessage();
-        message.setOrderId(order.getOrderId());
-        message.setCustomerId(order.getCustomerId());
-        message.setRestaurantId(order.getRestaurantId());
+        message.setOrderId(String.valueOf(order.getOrderId()));
+        message.setCustomerId(String.valueOf(order.getCustomerId()));
+        message.setRestaurantId(String.valueOf(order.getRestaurantId()));
         message.setStatus("DELIVERED");
         message.setTimestamp(Instant.now().toString());
         message.setAddress(order.getAddress());

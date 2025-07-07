@@ -15,7 +15,7 @@ interface OrderStatus {
   id: string;
   status:
     | "placed"
-    | "confirmed"
+    | "accepted"
     | "preparing"
     | "ready_for_pickup"
     | "out_for_delivery"
@@ -34,59 +34,170 @@ interface OrderStatus {
 const TrackOrder = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const [orderStatus, setOrderStatus] = useState<OrderStatus | null>(null);
+  const [localStatusTimeout, setLocalStatusTimeout] =
+    useState<NodeJS.Timeout | null>(null);
+  const [simulatedStatus, setSimulatedStatus] = useState<
+    OrderStatus["status"] | null
+  >(null);
+
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    if (orderId) {
-      fetchOrderStatus(orderId);
-      // Poll for updates every 3 seconds
-      const interval = setInterval(() => {
-        fetchOrderStatus(orderId);
-      }, 3000);
+    if (!orderId) return;
 
-      return () => clearInterval(interval);
-    }
-  }, [orderId]);
+    let interval: NodeJS.Timeout;
 
-  const fetchOrderStatus = async (id: string) => {
-    try {
-      const [statusData, detailsData] = await Promise.all([
-        trackOrder(id), // status + maybe ETA
-        getOrderDetails(id), // restaurantName, items, totalPrice, etc.
-      ]);
+    const fetchOrderStatus = async () => {
+      try {
+        const [statusData, detailsData] = await Promise.all([
+          trackOrder(orderId),
+          getOrderDetails(orderId),
+        ]);
 
-      const mappedOrder: OrderStatus = {
-        id: id,
-        status: statusData.status?.toLowerCase() || "placed",
-        estimatedDeliveryTime: new Date(
-          statusData.estimatedDeliveryTime ?? Date.now() + 30 * 60 * 1000 // Default to 30 minutes from now
-        ).toLocaleTimeString([], {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        }),
-        items: (detailsData.items ?? []).map((item: any) => ({
-          name: item.name ?? "Item",
-          quantity: item.quantity ?? 1,
-          price: item.price ?? 0,
-        })),
-        totalAmount: detailsData.totalPrice ?? 0,
-        deliveryAddress: detailsData.address ?? "210, Gandhi Nagar, Bengaluru",
-        restaurantName: detailsData.restaurantName ?? "Unknown",
-      };
+        const backendStatus = statusData.status?.toLowerCase() || "placed";
 
-      setOrderStatus(mappedOrder);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching order details:", error);
-      setLoading(false);
-    }
-  };
+        // Set simulated "preparing" after 15s if accepted
+        if (
+          backendStatus === "accepted" &&
+          simulatedStatus === null &&
+          !localStatusTimeout
+        ) {
+          const timeout = setTimeout(() => {
+            setSimulatedStatus("preparing");
+          }, 15000);
+          setLocalStatusTimeout(timeout);
+        }
+
+        // Stop simulation if backend status progressed
+        if (
+          backendStatus !== "accepted" &&
+          (simulatedStatus !== null || localStatusTimeout)
+        ) {
+          setSimulatedStatus(null);
+          if (localStatusTimeout) {
+            clearTimeout(localStatusTimeout);
+            setLocalStatusTimeout(null);
+          }
+        }
+
+        const effectiveStatus = simulatedStatus || backendStatus;
+
+        const mappedOrder: OrderStatus = {
+          id: orderId,
+          status: effectiveStatus,
+          estimatedDeliveryTime: new Date(
+            statusData.estimatedDeliveryTime ?? Date.now() + 30 * 60 * 1000
+          ).toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }),
+          items: (detailsData.items ?? []).map((item: any) => ({
+            name: item.name ?? "Item",
+            quantity: item.quantity ?? 1,
+            price: item.price ?? 0,
+          })),
+          totalAmount: detailsData.totalPrice ?? 0,
+          deliveryAddress:
+            detailsData.address ?? "210, Gandhi Nagar, Bengaluru",
+          restaurantName: detailsData.restaurantName ?? "Unknown",
+        };
+
+        setOrderStatus(mappedOrder);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching order status:", err);
+      }
+    };
+
+    fetchOrderStatus(); // initial
+    interval = setInterval(fetchOrderStatus, 3000); // poll
+
+    return () => {
+      clearInterval(interval);
+      if (localStatusTimeout) clearTimeout(localStatusTimeout);
+    };
+  }, [orderId, simulatedStatus, localStatusTimeout]);
+
+  // useEffect(() => {
+  //   if (orderId) {
+  //     fetchOrderStatus(orderId);
+  //     // Poll for updates every 3 seconds
+  //     const interval = setInterval(() => {
+  //       fetchOrderStatus(orderId);
+  //     }, 3000);
+
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [orderId]);
+
+  // const fetchOrderStatus = async (id: string) => {
+  //   try {
+  //     const [statusData, detailsData] = await Promise.all([
+  //       trackOrder(id), // status + maybe ETA
+  //       getOrderDetails(id), // restaurantName, items, totalPrice, etc.
+  //     ]);
+  //     const backendStatus = statusData.status?.toLowerCase() || "placed";
+
+  //     // Setup local simulation if accepted and not already triggered
+  //     if (
+  //       backendStatus === "accepted" &&
+  //       simulatedStatus === null &&
+  //       !localStatusTimeout
+  //     ) {
+  //       const timeout = setTimeout(() => {
+  //         setSimulatedStatus("preparing");
+  //       }, 15000);
+  //       setLocalStatusTimeout(timeout);
+  //     }
+
+  //     // If backend has progressed, stop simulation
+  //     if (
+  //       backendStatus !== "accepted" &&
+  //       (simulatedStatus !== null || localStatusTimeout)
+  //     ) {
+  //       setSimulatedStatus(null);
+  //       if (localStatusTimeout) {
+  //         clearTimeout(localStatusTimeout);
+  //         setLocalStatusTimeout(null);
+  //       }
+  //     }
+
+  //     const effectiveStatus = simulatedStatus || backendStatus;
+
+  //     const mappedOrder: OrderStatus = {
+  //       id: id,
+  //       status: effectiveStatus,
+  //       estimatedDeliveryTime: new Date(
+  //         statusData.estimatedDeliveryTime ?? Date.now() + 30 * 60 * 1000 // Default to 30 minutes from now
+  //       ).toLocaleTimeString([], {
+  //         hour: "numeric",
+  //         minute: "2-digit",
+  //         hour12: true,
+  //       }),
+  //       items: (detailsData.items ?? []).map((item: any) => ({
+  //         name: item.name ?? "Item",
+  //         quantity: item.quantity ?? 1,
+  //         price: item.price ?? 0,
+  //       })),
+  //       totalAmount: detailsData.totalPrice ?? 0,
+  //       deliveryAddress: detailsData.address ?? "210, Gandhi Nagar, Bengaluru",
+  //       restaurantName: detailsData.restaurantName ?? "Unknown",
+  //     };
+
+  //     setOrderStatus(mappedOrder);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error("Error fetching order details:", error);
+  //     setLoading(false);
+  //   }
+  // };
 
   const getStatusColor = (status: OrderStatus["status"]) => {
     switch (status) {
       case "placed":
         return "bg-blue-100 text-blue-800";
-      case "confirmed":
+      case "accepted":
         return "bg-yellow-100 text-yellow-800";
       case "preparing":
         return "bg-orange-100 text-orange-800";
@@ -105,7 +216,7 @@ const TrackOrder = () => {
     switch (status) {
       case "placed":
         return "Order placed successfully!";
-      case "confirmed":
+      case "accepted":
         return "Restaurant confirmed your order";
       case "preparing":
         return "Your food is being prepared";
@@ -123,7 +234,7 @@ const TrackOrder = () => {
   const getStatusSteps = () => {
     const steps = [
       { key: "placed", label: "Order Placed", icon: "📝" },
-      { key: "confirmed", label: "Confirmed", icon: "✅" },
+      { key: "accepted", label: "Accepted", icon: "✅" },
       { key: "preparing", label: "Preparing", icon: "👨‍🍳" },
       { key: "ready_for_pickup", label: "Ready", icon: "📦" },
       { key: "out_for_delivery", label: "On the Way", icon: "🚚" },

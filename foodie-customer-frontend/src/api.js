@@ -9,11 +9,15 @@ export const placeOrder = async (orderData) => {
 };
 
 // 🚚 Track the order by orderId
-export const trackOrder = async (orderId) => {
-    const response = await axios.post(`${BASE_URL}/orders/status`, { orderId });
-    return response.data;
-};
+// export const trackOrder = async (orderId) => {
+//     const response = await axios.post(`${BASE_URL}/orders/status`, { orderId });
+//     return response.data;
+// };
 
+export const trackOrder = async (orderId) => {
+    const response = await axios.get(`${BASE_URL}/orders/status-only/${orderId}`);
+    return response.data; // Will return: { status: "accepted" }
+};
 export const getOrderDetails = async (orderId) => {
     const response = await axios.get(`${BASE_URL}/orders/status/${orderId}`);
     return response.data;

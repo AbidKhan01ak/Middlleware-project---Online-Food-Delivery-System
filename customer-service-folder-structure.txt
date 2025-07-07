@@ -1,0 +1,47 @@
+customer-service
+ |
+ ├── src/
+ │   └── main/
+ │       ├── java/com/foodieExpress/customer_service/
+ │       │
+ │       ├── config/
+ │       │   ├── RabbitMQConfig.java
+ │       │   └── WebConfig.java
+ │       │
+ │       ├── controller/
+ │       │   ├── CustomerNotificationController.java
+ │       │   └── OrderController.java
+ │       │
+ │       ├── dto/
+ │       │   ├── OrderMessage.java
+ │       │   ├── OrderRequest.java
+ │       │   └── OrderResponse.java
+ │       │
+ │       ├── messaging/
+ │       │   ├── MessageListener.java
+ │       │   └── RabbitMQPublisher.java
+ │       │
+ │       ├── model/
+ │       │   ├── DeliveryStatus.java
+ │       │   ├── Order.java
+ │       │   └── OrderItem.java
+ │       │
+ │       ├── repository/
+ │       │   └── OrderRepository.java
+ │       │
+ │       ├── service/
+ │       │   └── OrderService.java
+ │       │
+ │       └── CustomerServiceApplication.java
+ │
+ │       └── resources/
+ │           └── application.yml
+ │
+ ├── test/java/com/foodieExpress/customer_service/
+ │   └── CustomerServiceApplicationTests.java
+ │
+ ├── .gitattributes
+ ├── .gitignore
+ ├── mvnw
+ ├── mvnw.cmd
+ └── pom.xml

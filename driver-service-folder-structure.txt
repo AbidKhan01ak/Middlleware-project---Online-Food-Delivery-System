@@ -1,0 +1,39 @@
+driver-service
+|
+|-src/
+|  |
+|  |- main/
+|  |   |- java/com/foodieExpress/driver_service/
+|      | 	|
+|      |       |- config
+|      |       |    |- RabbitMQConfig.java
+|      |       |
+|      |       |- controller
+|      |       |    |- DeliveryController.java
+|      |       |
+|      |       |- dto
+|      |       |    |- OrderMessage.java
+|      |       |
+|      |       |- messaging
+|      |       |    |- OrderAssignmentListener.java
+|      |       |    |- StatusUpdatePublisher.java
+|      |       |
+|      |       |- model 
+|      |       |    |- DeliveryStatus.java
+|      |       |    |- Order.java
+|      |       |
+|      |       |- service
+|      |       |    |- DeliveryService.java
+|      |       |
+|      |       |- DriverServiceApplication.java
+|      |       
+|      |
+|      |- resources
+|            |- application.yml
+|         
+|
+|- .gitattributes
+|- .gitignore
+|- mvnw
+|- mvnw.cmd 
+|- pom.xml

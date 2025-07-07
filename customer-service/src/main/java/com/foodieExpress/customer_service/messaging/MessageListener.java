@@ -37,17 +37,19 @@ public class MessageListener {
 
     @RabbitListener(queues = "order-status-updates")
     public void handleOrderStatusUpdate(OrderMessage message) {
-    String orderId = message.getOrderId();
-    String newStatus = message.getStatus();
+        log.info("Awaiting order status update messages...");
+        String orderId = message.getOrderId();
+        String newStatus = message.getStatus();
 
-    Optional<Order> orderOptional = orderRepository.findById(orderId);
-    if (orderOptional.isPresent()) {
-        Order order = orderOptional.get();
-        order.setStatus(newStatus);
-        orderRepository.save(order);
-        System.out.println("Order status updated to " + newStatus + " for Order ID " + orderId);
-    } else {
-        System.err.println("Order not found with ID: " + orderId);
-    }
+        Optional<Order> orderOptional = orderRepository.findByOrderId(orderId);
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            order.setStatus(newStatus);
+            log.info("Received order status update: orderId={}, newStatus={}", message.getOrderId(), message.getStatus());
+            orderRepository.save(order);
+            System.out.println("Order status updated to " + newStatus + " for Order ID " + orderId);
+        } else {
+            System.err.println("Order not found with ID: " + orderId);
+        }
     }   
 }
