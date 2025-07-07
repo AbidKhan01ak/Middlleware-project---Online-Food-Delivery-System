@@ -13,13 +13,20 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+interface OrderItem {
+  orderId: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
 interface Order {
   id: string;
   customerName: string;
   customerAddress: string;
-  items: string[];
+  items: OrderItem[];
   totalAmount: number;
-  status: "assigned" | "picked_up" | "en_route" | "delivered";
+  status: "ready" | "picked_up" | "en_route" | "delivered";
   orderTime: string;
   estimatedDeliveryTime: string;
 }
@@ -38,7 +45,12 @@ const Index = () => {
     try {
       setLoading(true);
       const response = await fetchAssignedOrders();
-      setOrders(response.data);
+      const normalizedOrders = response.data.map((order: any) => ({
+        ...order,
+        status: order.status.toLowerCase(), // normalize to lowercase
+      }));
+
+      setOrders(normalizedOrders);
       console.log("Orders fetched successfully");
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -86,7 +98,7 @@ const Index = () => {
 
   const getStatusColor = (status: Order["status"]) => {
     switch (status) {
-      case "assigned":
+      case "ready":
         return "bg-orange-500";
       case "picked_up":
         return "bg-blue-500";
@@ -101,7 +113,7 @@ const Index = () => {
 
   const getStatusIcon = (status: Order["status"]) => {
     switch (status) {
-      case "assigned":
+      case "ready":
         return <Package className="w-4 h-4" />;
       case "picked_up":
         return <Truck className="w-4 h-4" />;
@@ -116,7 +128,7 @@ const Index = () => {
 
   const getNextStatusActions = (currentStatus: Order["status"]) => {
     switch (currentStatus) {
-      case "assigned":
+      case "ready":
         return [
           {
             status: "picked_up",
@@ -242,8 +254,12 @@ const Index = () => {
                   <p className="text-sm font-medium text-gray-700 mb-1">
                     Items:
                   </p>
-                  <p className="text-sm text-gray-600">
-                    {order.items.join(", ")}
+                  <p className="text-sm text-gray-600 list-disc list-inside space-y-1">
+                    {order.items.map((item, index) => (
+                      <li key={index}>
+                        {item.name} × {item.quantity} - ${item.price.toFixed(2)}
+                      </li>
+                    ))}
                   </p>
                   <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-200">
                     <span className="text-sm text-gray-600">Total:</span>

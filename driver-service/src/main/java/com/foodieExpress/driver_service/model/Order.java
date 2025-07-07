@@ -1,6 +1,7 @@
 package com.foodieExpress.driver_service.model;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.List;
 
 import jakarta.persistence.CollectionTable;
@@ -12,7 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "restaurant_orders")
+@Table(name = "orders")
 public class Order implements Serializable {
 
     @Id
@@ -74,5 +75,26 @@ public class Order implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCustomerName() {
+        return "Abid Khan"; // Assuming customerId is the name for simplicity
+    }
+
+    public String getCustomerAddress() {
+        return "210, Gandhi Nagar, Bengaluru"; 
+    }
+
+    // Returns current time in 12-hour format (hh:mm a)
+    public String getOrderTime() {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("hh:mm a");
+        return sdf.format(new java.util.Date());
+    }
+
+    public String getEstimatedDeliveryTime() {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("hh:mm a");
+        java.util.Date now = new java.util.Date();
+        long estimatedTime = now.getTime() + 30 * 60 * 1000; // Adding 30 minutes
+        return sdf.format(new java.util.Date(estimatedTime));
     }
 }

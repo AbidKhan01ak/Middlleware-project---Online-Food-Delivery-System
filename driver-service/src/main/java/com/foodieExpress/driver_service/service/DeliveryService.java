@@ -3,6 +3,9 @@ package com.foodieExpress.driver_service.service;
 import java.time.Instant;
 import java.util.List;
 
+import java.util.stream.Collectors;
+import com.foodieExpress.driver_service.dto.DriverOrderDTO;
+import com.foodieExpress.driver_service.dto.OrderItemDTO;
 import com.foodieExpress.driver_service.messaging.OrderAssignmentListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +23,12 @@ public class DeliveryService {
     private static final Logger log = LoggerFactory.getLogger(MessageListener.class);
     
     private final StatusUpdatePublisher publisher;
-    private final OrderAssignmentListener assignmentListener;
+    // private final OrderAssignmentListener assignmentListener;
     private final OrderRepository orderRepository;
 
     public DeliveryService(StatusUpdatePublisher publisher, OrderAssignmentListener assignmentListener, OrderRepository orderRepository) {
         this.publisher = publisher;
-        this.assignmentListener = assignmentListener;
+        // this.assignmentListener = assignmentListener;
         this.orderRepository = orderRepository;
     }
 
@@ -53,7 +56,32 @@ public class DeliveryService {
         }
     }
 
-    public List<Order> getAssignedOrders() {
-        return orderRepository.findByStatusIgnoreCase("ready");
+    public List<DriverOrderDTO> getAssignedOrders() {
+        List<Order> orders = orderRepository.findByStatusIgnoreCase("ready");
+
+        return orders.stream().map(order -> {
+            List<OrderItemDTO> itemDTOs = order.getItems().stream()
+                    .map(item -> new OrderItemDTO(
+                            item.getId(),
+                            item.getName(),
+                            item.getPrice(),
+                            item.getQuantity()))
+                    .collect(Collectors.toList());
+
+            double totalAmount = itemDTOs.stream()
+                    .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                    .sum();
+
+            return new DriverOrderDTO(
+                    order.getOrderId(),
+                    order.getCustomerName(),
+                    order.getCustomerAddress(),
+                    totalAmount,
+                    itemDTOs,
+                    order.getStatus(),
+                    order.getOrderTime(),
+                    order.getEstimatedDeliveryTime()
+            );
+        }).collect(Collectors.toList());
     }
 }

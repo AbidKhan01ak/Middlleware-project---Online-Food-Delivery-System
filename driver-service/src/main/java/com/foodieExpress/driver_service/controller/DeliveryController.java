@@ -1,5 +1,6 @@
 package com.foodieExpress.driver_service.controller;
 
+import com.foodieExpress.driver_service.dto.DriverOrderDTO;
 import com.foodieExpress.driver_service.model.Order;
 import com.foodieExpress.driver_service.model.DeliveryStatus;
 import com.foodieExpress.driver_service.service.DeliveryService;
@@ -32,7 +33,9 @@ public class DeliveryController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<Order>> getAssignedOrders() {
-        return ResponseEntity.ok(deliveryService.getAssignedOrders());
+    public ResponseEntity<List<DriverOrderDTO>> getAssignedOrders() {
+        List<DriverOrderDTO> orders = deliveryService.getAssignedOrders();
+
+        return ResponseEntity.ok(orders);
     }
 }
