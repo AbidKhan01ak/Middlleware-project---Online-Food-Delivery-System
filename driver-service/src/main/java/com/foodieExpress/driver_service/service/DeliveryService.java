@@ -6,29 +6,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.foodieExpress.driver_service.dto.DriverOrderDTO;
 import com.foodieExpress.driver_service.dto.OrderItemDTO;
-import com.foodieExpress.driver_service.messaging.OrderAssignmentListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.foodieExpress.driver_service.model.DeliveryStatus;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 import com.foodieExpress.driver_service.model.Order;
 import com.foodieExpress.driver_service.messaging.StatusUpdatePublisher;
-import com.foodieExpress.driver_service.model.DeliveryStatus;
+// import com.foodieExpress.driver_service.model.DeliveryStatus;
 import com.foodieExpress.driver_service.Repository.OrderRepository;
 import com.foodieExpress.driver_service.dto.OrderMessage;
-import org.springframework.amqp.core.MessageListener;
+// import org.springframework.amqp.core.MessageListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DeliveryService {
 
-    private static final Logger log = LoggerFactory.getLogger(MessageListener.class);
+    // private static final Logger log = LoggerFactory.getLogger(MessageListener.class);
     
     private final StatusUpdatePublisher publisher;
-    // private final OrderAssignmentListener assignmentListener;
     private final OrderRepository orderRepository;
 
-    public DeliveryService(StatusUpdatePublisher publisher, OrderAssignmentListener assignmentListener, OrderRepository orderRepository) {
+    public DeliveryService(StatusUpdatePublisher publisher, OrderRepository orderRepository) {
         this.publisher = publisher;
-        // this.assignmentListener = assignmentListener;
         this.orderRepository = orderRepository;
     }
 
@@ -37,23 +35,45 @@ public class DeliveryService {
     System.out.println("Order assigned to driver: " + order);
     }
 
-    public void updateStatus(DeliveryStatus status) {
-        log.info("Driver updated status: {}", status.getStatus());
-        String timestamp = Instant.now().toString();
-        OrderMessage message = new OrderMessage(
-        status.getOrderId(),
-        status.getCustomerId(),
-        status.getRestaurantId(),
-        status.getStatus(),
-        timestamp
-    );
+    // public void updateStatus(DeliveryStatus status) {
+    //     log.info("Driver updated status: {}", status.getStatus());
+    //     String timestamp = Instant.now().toString();
+    //     OrderMessage message = new OrderMessage(
+    //     status.getOrderId(),
+    //     status.getCustomerId(),
+    //     status.getRestaurantId(),
+    //     status.getStatus(),
+    //     timestamp
+    // );
 
+    
+        // switch (status.getStatus().toLowerCase()) {
+        //     case "pickedup" -> publisher.sendOrderPickedUp(message);
+        //     case "En-route" -> publisher.sendOrderEnRoute(message);
+        //     case "delivered" -> publisher.sendOrderDelivered(message);
+        // }
+    // }
 
-        switch (status.getStatus().toLowerCase()) {
-            case "pickedup" -> publisher.sendOrderPickedUp(message);
-            case "En-route" -> publisher.sendOrderEnRoute(message);
-            case "delivered" -> publisher.sendOrderDelivered(message);
+    public void updateStatusToPickedUp(DeliveryStatus status) {
+        String orderId = status.getOrderId();
+    // update in local DB
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null) {
+            System.err.println("❌ Could not find order with ID: " + orderId);
+            System.err.println("💡 Available orders: " + orderRepository.findAll());
+            return;
         }
+        order.setStatus("PICKED_UP");
+        orderRepository.save(order);
+        // send status to customer
+        OrderMessage message = new OrderMessage();
+        message.setOrderId(orderId);
+        message.setCustomerName(order.getCustomerName());
+        message.setRestaurantName(order.getRestaurantName());
+        message.setStatus("PICKED_UP");
+        message.setTimestamp(Instant.now().toString());
+
+        publisher.sendOrderStatusUpdate(message);
     }
 
     public List<DriverOrderDTO> getAssignedOrders() {
@@ -76,6 +96,7 @@ public class DeliveryService {
                     order.getOrderId(),
                     order.getCustomerName(),
                     order.getCustomerAddress(),
+                    order.getRestaurantName(),
                     totalAmount,
                     itemDTOs,
                     order.getStatus(),

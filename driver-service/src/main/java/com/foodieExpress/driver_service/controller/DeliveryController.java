@@ -22,7 +22,7 @@ public class DeliveryController {
 
     @PostMapping("/status")
     public ResponseEntity<String> updateStatus(@RequestBody DeliveryStatus status) {
-        deliveryService.updateStatus(status);
+        deliveryService.updateStatusToPickedUp(status);
         return ResponseEntity.ok("Status updated");
     }
 

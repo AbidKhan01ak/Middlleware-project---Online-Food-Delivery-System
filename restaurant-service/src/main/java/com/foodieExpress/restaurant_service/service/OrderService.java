@@ -1,7 +1,6 @@
 package com.foodieExpress.restaurant_service.service;
 import com.foodieExpress.restaurant_service.model.Order;
 import com.foodieExpress.restaurant_service.repository.OrderRepository;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import com.foodieExpress.restaurant_service.messaging.RabbitMQPublisher;
 import com.foodieExpress.restaurant_service.dto.OrderMessage;
@@ -9,7 +8,6 @@ import com.foodieExpress.restaurant_service.dto.OrderDTO;
 import com.foodieExpress.restaurant_service.dto.OrderItemDTO;
 import java.time.Instant;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Service

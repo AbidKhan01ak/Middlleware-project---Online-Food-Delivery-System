@@ -45,6 +45,8 @@ public class MessageListener {
             Order order = orderOptional.get();
             order.setStatus(newStatus);
             log.info("Received order status update: orderId={}, newStatus={}", message.getOrderId(), message.getStatus());
+            log.info("/////////////////////////////////////////////////////");
+            log.info("Received status update: orderId={}, status={}", orderId, newStatus);
             orderRepository.save(order);
             System.out.println("Order status updated to " + newStatus + " for Order ID " + orderId);
         } else {

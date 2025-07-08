@@ -1,7 +1,6 @@
 package com.foodieExpress.driver_service.model;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.List;
 
 import jakarta.persistence.CollectionTable;

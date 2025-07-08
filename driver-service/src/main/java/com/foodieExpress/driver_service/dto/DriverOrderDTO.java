@@ -7,6 +7,7 @@ public class DriverOrderDTO {
     private String id;
     private String customerName;
     private String customerAddress;
+    private String restaurantName; // Added restaurant name
     private Double totalAmount;
     private List<OrderItemDTO> items;
     private String status;
@@ -16,10 +17,11 @@ public class DriverOrderDTO {
     public DriverOrderDTO() {
     }
 
-    public DriverOrderDTO(String id, String customerName, String customerAddress, Double totalAmount, List<OrderItemDTO> items, String status, String orderTime, String estimatedDeliveryTime) {
+    public DriverOrderDTO(String id, String customerName, String customerAddress, String restaurantName, Double totalAmount, List<OrderItemDTO> items, String status, String orderTime, String estimatedDeliveryTime) {
         this.id = id;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
+        this.restaurantName = restaurantName; // Initialize restaurant name
         this.totalAmount = totalAmount;
         this.items = items;
         this.status = status;
@@ -44,6 +46,12 @@ public class DriverOrderDTO {
     }
     public void setCustomerAddress(String customerAddress) {
         this.customerAddress = customerAddress;
+    }
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
     }
     public Double getTotalAmount() {
         return totalAmount;

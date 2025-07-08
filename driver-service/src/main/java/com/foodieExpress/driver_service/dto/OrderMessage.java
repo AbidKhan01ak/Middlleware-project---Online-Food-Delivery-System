@@ -3,18 +3,18 @@ package com.foodieExpress.driver_service.dto;
 public class OrderMessage {
 
     private String orderId;
-    private String customerId;
-    private String restaurantId;
+    private String customerName;
+    private String restaurantName;
     private String status;
     private String timestamp;
 
     public OrderMessage() {
     }
 
-    public OrderMessage(String orderId, String customerId, String restaurantId, String status, String timestamp) {
+    public OrderMessage(String orderId, String customerName, String restaurantName, String status, String timestamp) {
         this.orderId = orderId;
-        this.customerId = customerId;
-        this.restaurantId = restaurantId;
+        this.customerName = customerName;
+        this.restaurantName = restaurantName;
         this.status = status;
         this.timestamp = timestamp;
     }
@@ -28,21 +28,19 @@ public class OrderMessage {
     public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
-
-    public String getCustomerId() {
-        return customerId;
+    public String getCustomerName() {
+        return customerName;
+    }
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public String getRestaurantName() {
+        return restaurantName;
     }
 
-    public String getRestaurantId() {
-        return restaurantId;
-    }
-
-    public void setRestaurantId(String restaurantId) {
-        this.restaurantId = restaurantId;
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
     }
 
     public String getStatus() {

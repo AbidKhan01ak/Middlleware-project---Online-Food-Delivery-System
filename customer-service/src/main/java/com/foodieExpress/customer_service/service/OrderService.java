@@ -43,10 +43,12 @@ public class OrderService {
 
     public void updateStatus(DeliveryStatus status) {
 
-        Optional<Order> optionalOrder = orderRepository.findByOrderId(status.getOrderId());
-        optionalOrder.ifPresent(order -> {
+        orderRepository.findByOrderId(status.getOrderId()).ifPresent(order -> {
             order.setStatus(status.getStatus());
             orderRepository.save(order);
+
+            // NEW: publish status update
+            publisher.sendOrderStatusUpdate(order);
         });
     }
 

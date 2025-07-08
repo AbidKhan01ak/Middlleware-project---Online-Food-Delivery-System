@@ -24,6 +24,7 @@ interface Order {
   id: string;
   customerName: string;
   customerAddress: string;
+  restaurantName: string;
   items: OrderItem[];
   totalAmount: number;
   status: "ready" | "picked_up" | "en_route" | "delivered";
@@ -37,6 +38,16 @@ const Index = () => {
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const { toast } = useToast();
 
+  const DELIVERY_FEE = 30;
+  const TAX_RATE = 0.08;
+  const getTotalPrice = (items: OrderItem[]) => {
+    const subtotal = items.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    const tax = subtotal * TAX_RATE;
+    return subtotal + DELIVERY_FEE + tax;
+  };
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -49,7 +60,6 @@ const Index = () => {
         ...order,
         status: order.status.toLowerCase(), // normalize to lowercase
       }));
-
       setOrders(normalizedOrders);
       console.log("Orders fetched successfully");
     } catch (error) {
@@ -63,7 +73,6 @@ const Index = () => {
       setLoading(false);
     }
   };
-
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
       setUpdatingStatus(orderId);
@@ -252,6 +261,9 @@ const Index = () => {
                 {/* Order Details */}
                 <div className="bg-gray-50 rounded-lg p-3">
                   <p className="text-sm font-medium text-gray-700 mb-1">
+                    Restaurant: {order.restaurantName}
+                  </p>
+                  <p className="text-sm font-medium text-gray-700 mb-1">
                     Items:
                   </p>
                   <p className="text-sm text-gray-600 list-disc list-inside space-y-1">
@@ -264,7 +276,7 @@ const Index = () => {
                   <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-200">
                     <span className="text-sm text-gray-600">Total:</span>
                     <span className="font-semibold text-gray-900">
-                      ${order.totalAmount}
+                      ${getTotalPrice(order.items).toFixed(2)}
                     </span>
                   </div>
                 </div>
