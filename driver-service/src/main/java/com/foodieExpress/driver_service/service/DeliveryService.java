@@ -56,7 +56,6 @@ public class DeliveryService {
 
     public void updateStatusToPickedUp(DeliveryStatus status) {
         String orderId = status.getOrderId();
-    // update in local DB
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order == null) {
             System.err.println("❌ Could not find order with ID: " + orderId);
@@ -65,7 +64,7 @@ public class DeliveryService {
         }
         order.setStatus("PICKED_UP");
         orderRepository.save(order);
-        // send status to customer
+
         OrderMessage message = new OrderMessage();
         message.setOrderId(orderId);
         message.setCustomerName(order.getCustomerName());
@@ -78,7 +77,7 @@ public class DeliveryService {
 
     public void updateStatusToDelivered(DeliveryStatus status) {
         String orderId = status.getOrderId();
-    // update in local DB
+
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order == null) {
             System.err.println("❌ Could not find order with ID: " + orderId);
@@ -87,7 +86,7 @@ public class DeliveryService {
         }
         order.setStatus("DELIVERED");
         orderRepository.save(order);
-        // send status to customer
+
         OrderMessage message = new OrderMessage();
         message.setOrderId(orderId);
         message.setCustomerName(order.getCustomerName());
@@ -100,7 +99,7 @@ public class DeliveryService {
 
     public void updateStatusToEnRoute(DeliveryStatus status) {
         String orderId = status.getOrderId();
-    // update in local DB
+
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order == null) {
             System.err.println("❌ Could not find order with ID: " + orderId);

@@ -26,7 +26,6 @@ public class OrderService {
         order.setStatus("ACCEPTED");
         repository.save(order);
 
-        // NEW: Publish message to customer-service
         OrderMessage orderMessage = new OrderMessage();
         orderMessage.setOrderId(String.valueOf(order.getOrderId()));
         orderMessage.setCustomerId(String.valueOf(order.getCustomerId()));
@@ -36,10 +35,11 @@ public class OrderService {
         orderMessage.setAddress(order.getAddress());
         orderMessage.setDeliveryTime(order.getDeliveryTime());
 
-        publisher.sendOrderStatusUpdate(orderMessage);  // via RabbitMQ
+        publisher.sendOrderStatusUpdate(orderMessage);  
 
         return order;
     }
+    
     public void processOrder(Order order) {
         System.out.println("Processing order in restaurant: " + order);
         repository.save(order);
@@ -57,7 +57,6 @@ public class OrderService {
         order.setStatus("accepted");
         repository.save(order);
 
-        // Notify customer-service
         OrderMessage message = new OrderMessage();
         message.setOrderId(orderId);
         message.setStatus("ACCEPTED");
@@ -70,7 +69,6 @@ public class OrderService {
         order.setStatus("ready");
         repository.save(order);
 
-        // Notify customer service
         OrderMessage orderMessage = new OrderMessage();
         orderMessage.setOrderId(orderId);
         orderMessage.setStatus("READY");

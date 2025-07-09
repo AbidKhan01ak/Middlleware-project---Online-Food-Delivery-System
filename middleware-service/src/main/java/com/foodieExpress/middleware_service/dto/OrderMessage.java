@@ -8,7 +8,7 @@ public class OrderMessage {
     private String orderId;
     private String customerId;
     private String restaurantId;
-    private String status; // placed, accepted, picked_up, delivered
+    private String status; 
     private String timestamp;
 
     public OrderMessage(){}

@@ -1,5 +1,3 @@
-// src/api.js
-
 import axios from 'axios';
 
 const api = axios.create({
@@ -9,7 +7,6 @@ const api = axios.create({
     },
 });
 
-// Add a response interceptor (optional for global error handling)
 api.interceptors.response.use(
     response => response,
     error => {
@@ -17,9 +14,7 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-// API functions
 
-// Get all accepted orders
 export const fetchAcceptedOrders = async () => {
     const response = await api.get('/accepted-orders');
     return response.data;
@@ -29,7 +24,7 @@ export const markOrderAccepted = async (orderId) => {
     const response = await api.post('/accepted', { orderId });
     return response.data;
 };
-// Mark an order as ready (fetch order from DB and send only orderId)
+
 export const markOrderReady = async (orderId) => {
     const response = await api.post('/ready', {
         orderId
@@ -37,7 +32,7 @@ export const markOrderReady = async (orderId) => {
     return response.data;
 };
 
-// Confirm that an order was delivered
+
 export const confirmOrderDelivered = async (orderId) => {
     const response = await api.post('/delivered', {
         orderId

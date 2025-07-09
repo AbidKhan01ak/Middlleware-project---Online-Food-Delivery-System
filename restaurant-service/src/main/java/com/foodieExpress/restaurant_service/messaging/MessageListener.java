@@ -20,7 +20,7 @@ public class MessageListener {
         this.orderRepository = orderRepository;
     }
 
-    @RabbitListener(queues = "order-status-updates") // Must match the queue name from driver publisher
+    @RabbitListener(queues = "order-status-updates") 
     public void handleStatusUpdate(OrderMessage message) {
         String orderId = message.getOrderId();
         String status = message.getStatus();

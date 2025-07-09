@@ -64,24 +64,23 @@ public class OrderController {
     }
     @GetMapping("/status/{orderId}")
     public ResponseEntity<OrderResponse> getOrderStatus(@PathVariable String orderId) {
-    Order order = orderService.getOrderById(orderId);
-    if (order == null) {
-        return ResponseEntity.notFound().build();
+        Order order = orderService.getOrderById(orderId);
+        if (order == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        OrderResponse response = new OrderResponse();
+        response.setMessage("Order status retrieved successfully");
+        response.setOrderId(order.getOrderId());
+        response.setRestaurantName(order.getRestaurantName());
+        response.setAddress(order.getAddress());
+        response.setItems(order.getItems());
+        response.setStatus(order.getStatus());
+        response.setTotalPrice(order.getTotalPrice());
+
+        response.setEstimatedDeliveryTime(LocalDateTime.now().plusMinutes(30).toString());
+
+        return ResponseEntity.ok(response);
     }
-
-    OrderResponse response = new OrderResponse();
-    response.setMessage("Order status retrieved successfully");
-    response.setOrderId(order.getOrderId());
-    response.setRestaurantName(order.getRestaurantName());
-    response.setAddress(order.getAddress());
-    response.setItems(order.getItems());
-    response.setStatus(order.getStatus());
-    response.setTotalPrice(order.getTotalPrice());
-
-    // For demo: static 30-minute delivery time
-    response.setEstimatedDeliveryTime(LocalDateTime.now().plusMinutes(30).toString());
-
-    return ResponseEntity.ok(response);
-}
 
 }
