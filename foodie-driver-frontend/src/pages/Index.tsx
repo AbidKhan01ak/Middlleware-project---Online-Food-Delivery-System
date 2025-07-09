@@ -285,7 +285,7 @@ const Index = () => {
                   <p className="text-sm text-gray-600 list-disc list-inside space-y-1">
                     {order.items.map((item, index) => (
                       <li key={index}>
-                        {item.name} × {item.quantity} - ${item.price.toFixed(2)}
+                        {item.name} × {item.quantity} - ₹{item.price.toFixed(2)}
                       </li>
                     ))}
                   </p>
