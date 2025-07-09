@@ -105,7 +105,7 @@ const Cart = () => {
                         from {item.restaurantName}
                       </p>
                       <p className="text-green-600 font-semibold">
-                        ${item.price.toFixed(0)} each
+                        ₹{item.price.toFixed(0)} each
                       </p>
                     </div>
 
@@ -144,7 +144,7 @@ const Cart = () => {
 
                   <div className="mt-4 pt-4 border-t">
                     <p className="text-right font-semibold">
-                      Subtotal: ${(item.price * item.quantity).toFixed(0)}
+                      Subtotal: ₹{(item.price * item.quantity).toFixed(0)}
                     </p>
                   </div>
                 </CardContent>
@@ -161,7 +161,7 @@ const Cart = () => {
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(0)}</span>
+                  <span>₹{subtotal.toFixed(0)}</span>
                 </div>
 
                 <div className="flex justify-between">

@@ -68,6 +68,8 @@ const TrackOrder = () => {
             break;
           case "PICKED_UP":
           case "picked_up":
+          case "EN_ROUTE":
+          case "en_route":
             backendStatus = "out_for_delivery";
             break;
           case "DELIVERED":

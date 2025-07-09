@@ -3,11 +3,9 @@ package com.foodieExpress.restaurant_service.controller;
 import com.foodieExpress.restaurant_service.model.Order;
 import com.foodieExpress.restaurant_service.service.OrderService;
 import org.springframework.http.ResponseEntity;
-import com.foodieExpress.restaurant_service.messaging.RabbitMQPublisher;
 import org.springframework.web.bind.annotation.*;
 import com.foodieExpress.restaurant_service.dto.OrderMessage;
 import com.foodieExpress.restaurant_service.dto.OrderDTO;
-import com.foodieExpress.restaurant_service.dto.OrderItemDTO;
 
 import java.util.List;
 
@@ -16,12 +14,10 @@ import java.util.List;
 @RequestMapping("/api/restaurant")
 public class OrderController {
 
-    private final RabbitMQPublisher publisher;
     private final OrderService orderService;
 
-    public OrderController(OrderService orderService, RabbitMQPublisher publisher) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.publisher = publisher;
     }
 
     @PostMapping("/orders")

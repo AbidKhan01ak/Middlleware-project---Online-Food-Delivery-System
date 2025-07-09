@@ -75,7 +75,7 @@ const RestaurantMenu = () => {
                 <img
                   src={restaurant.image}
                   alt={restaurant.name}
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-full object-contain rounded-lg"
                 />
               ) : (
                 <div className="text-4xl">🍽️</div>
@@ -127,6 +127,7 @@ const RestaurantMenu = () => {
                   item={item}
                   restaurantId={restaurant.id}
                   restaurantName={restaurant.name}
+                  image={item.image}
                 />
               ))}
             </div>

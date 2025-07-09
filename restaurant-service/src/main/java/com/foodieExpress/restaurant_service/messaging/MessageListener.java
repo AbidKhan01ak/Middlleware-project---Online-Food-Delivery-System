@@ -1,8 +1,8 @@
 package com.foodieExpress.restaurant_service.messaging;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.foodieExpress.restaurant_service.dto.OrderMessage;
 import com.foodieExpress.restaurant_service.repository.OrderRepository;
 import com.foodieExpress.restaurant_service.model.Order;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MessageListener {
     
-    // private static final Logger log = LoggerFactory.getLogger(MessageListener.class);
+    private static final Logger log = LoggerFactory.getLogger(MessageListener.class);
 
     private final OrderRepository orderRepository;
 
@@ -35,9 +35,16 @@ public class MessageListener {
         }
     }
     
-    // @RabbitListener(queues = "order.delivered.queue")
-    // public void handleOrderDelivered(OrderMessage message) {
-    //     log.info("Restaurant received delivery confirmation for orderId: {}", message.getOrderId());
-    //     // Optional: update DB, trigger UI, analytics, etc.
-    // }
+    @RabbitListener(queues = "order.delivered.queue")
+    public void handleOrderDelivered(OrderMessage message) {
+        log.info("Restaurant received delivery confirmation for orderId: {}", message.getOrderId());
+        // Optional: update DB, trigger UI, analytics, etc.
+    }
+
+    @RabbitListener(queues = "order.placed.queue")
+    public void handleOrderPlaced(Order order) {
+        System.out.println("✅ Restaurant received new order: " + order.getOrderId());
+        // You can log or save order to DB
+        orderRepository.save(order);
+}
 }

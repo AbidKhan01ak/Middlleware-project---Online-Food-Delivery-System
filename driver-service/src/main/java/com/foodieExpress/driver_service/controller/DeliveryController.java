@@ -22,8 +22,18 @@ public class DeliveryController {
 
     @PostMapping("/status")
     public ResponseEntity<String> updateStatus(@RequestBody DeliveryStatus status) {
-        deliveryService.updateStatusToPickedUp(status);
-        return ResponseEntity.ok("Status updated");
+        String statusValue = status.getStatus().toUpperCase();
+
+        switch (statusValue) {
+            case "PICKED_UP" -> deliveryService.updateStatusToPickedUp(status);
+            case "EN_ROUTE" -> deliveryService.updateStatusToEnRoute(status);
+            case "DELIVERED" -> deliveryService.updateStatusToDelivered(status);
+            default -> {
+                return ResponseEntity.badRequest().body("Unknown status: " + statusValue);
+            }
+        }
+        
+        return ResponseEntity.ok("Status updated to " + statusValue);
     }
 
     @PostMapping("/assign")

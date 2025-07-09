@@ -23,7 +23,7 @@ const RestaurantCard: React.FC<Props> = ({ restaurant }) => {
             <img
               src={restaurant.image}
               alt={restaurant.name}
-              className="w-full h-full object-cover rounded-t-lg"
+              className="w-full h-full object-contain rounded-x-lg"
             />
           ) : (
             <div className="text-4xl">🍽️</div>

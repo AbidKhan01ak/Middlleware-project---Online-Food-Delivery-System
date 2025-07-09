@@ -100,7 +100,7 @@ public class OrderService {
         Order order = repository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
 
-        order.setStatus("DELIVERED");
+        order.setStatus("delivered");
         repository.save(order);
 
         OrderMessage message = new OrderMessage();

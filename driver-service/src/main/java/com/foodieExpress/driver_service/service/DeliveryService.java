@@ -76,6 +76,50 @@ public class DeliveryService {
         publisher.sendOrderStatusUpdate(message);
     }
 
+    public void updateStatusToDelivered(DeliveryStatus status) {
+        String orderId = status.getOrderId();
+    // update in local DB
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null) {
+            System.err.println("❌ Could not find order with ID: " + orderId);
+            System.err.println("💡 Available orders: " + orderRepository.findAll());
+            return;
+        }
+        order.setStatus("DELIVERED");
+        orderRepository.save(order);
+        // send status to customer
+        OrderMessage message = new OrderMessage();
+        message.setOrderId(orderId);
+        message.setCustomerName(order.getCustomerName());
+        message.setRestaurantName(order.getRestaurantName());
+        message.setStatus("DELIVERED");
+        message.setTimestamp(Instant.now().toString());
+
+        publisher.sendOrderStatusUpdate(message);
+    }
+
+    public void updateStatusToEnRoute(DeliveryStatus status) {
+        String orderId = status.getOrderId();
+    // update in local DB
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null) {
+            System.err.println("❌ Could not find order with ID: " + orderId);
+            System.err.println("💡 Available orders: " + orderRepository.findAll());
+            return;
+        }
+        order.setStatus("EN_ROUTE");
+        orderRepository.save(order);
+        // send status to customer
+        OrderMessage message = new OrderMessage();
+        message.setOrderId(orderId);
+        message.setCustomerName(order.getCustomerName());
+        message.setRestaurantName(order.getRestaurantName());
+        message.setStatus("EN_ROUTE");
+        message.setTimestamp(Instant.now().toString());
+
+        publisher.sendOrderStatusUpdate(message);
+    }
+
     public List<DriverOrderDTO> getAssignedOrders() {
         List<Order> orders = orderRepository.findByStatusIgnoreCase("ready");
 

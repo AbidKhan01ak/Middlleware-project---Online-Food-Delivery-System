@@ -60,7 +60,7 @@ public class RabbitMQConfig {
                 .with("order.delivered");
     }
 
-     @Bean
+    @Bean
     public Binding orderStatusBinding() {
         return BindingBuilder
                 .bind(orderStatusQueue())

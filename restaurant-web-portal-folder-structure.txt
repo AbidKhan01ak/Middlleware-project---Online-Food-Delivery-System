@@ -1,4 +1,4 @@
-foodie-customer-frontend
+foodie-restaurant-frontend
 |- public/
 |-src/
 |  |

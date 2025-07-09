@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,9 +38,11 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const DELIVERY_FEE = 30;
   const TAX_RATE = 0.08;
+
   const getTotalPrice = (items: OrderItem[]) => {
     const subtotal = items.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -48,6 +51,7 @@ const Index = () => {
     const tax = subtotal * TAX_RATE;
     return subtotal + DELIVERY_FEE + tax;
   };
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -201,6 +205,18 @@ const Index = () => {
             <Badge variant="secondary" className="bg-green-100 text-green-800">
               {orders.filter((o) => o.status !== "delivered").length} Active
             </Badge>
+            <Button
+              variant="outline"
+              onClick={() => navigate("/driver/picked-up")}
+            >
+              Picked Up Orders
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate("/driver/delivered")}
+            >
+              Delivered Orders
+            </Button>
           </div>
         </div>
       </div>
@@ -276,7 +292,7 @@ const Index = () => {
                   <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-200">
                     <span className="text-sm text-gray-600">Total:</span>
                     <span className="font-semibold text-gray-900">
-                      ${getTotalPrice(order.items).toFixed(2)}
+                      ₹{getTotalPrice(order.items).toFixed(2)}
                     </span>
                   </div>
                 </div>

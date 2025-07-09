@@ -1,0 +1,198 @@
+Online-food-delivery-platform/
+├── customer-service/
+│   ├── src/main/
+│   │   ├── java/com/foodieExpress/customer_service/
+│   │   │   ├── config/
+│   │   │   │   ├── RabbitMQConfig.java
+│   │   │   │   └── WebConfig.java
+│   │   │   ├── controller/
+│   │   │   │   ├── OrderController.java
+│   │   │   │   
+│   │   │   ├── dto/
+│   │   │   │   ├── OrderMessage.java
+│   │   │   │   ├── OrderRequest.java
+│   │   │   │   └── OrderResponse.java
+│   │   │   ├── messaging/
+│   │   │   │   ├── MessageListener.java
+│   │   │   │   └── RabbitMQPublisher.java
+│   │   │   ├── model/
+│   │   │   │   ├── DeliveryStatus.java
+│   │   │   │   ├── Order.java
+│   │   │   │   └── OrderItem.java
+│   │   │   ├── repository/
+│   │   │   │   └── OrderRepository.java
+│   │   │   ├── service/
+│   │   │   │   └── OrderService.java
+│   │   │   └── CustomerServiceApplication.java
+│   │   └── resources/
+│   │       └── application.yml
+│   ├── mvnw
+│   ├── mvnw.cmd
+│   └── pom.xml
+│
+├── restaurant-service/
+│   ├── src/main/
+│   │   ├── java/com/foodieExpress/restaurant_service/
+│   │   │   ├── config/
+│   │   │   │   ├── RabbitMQConfig.java
+│   │   │   │   └── WebConfig.java
+│   │   │   ├── controller/
+│   │   │   │   └── OrderController.java
+│   │   │   ├── dto/
+│   │   │   │   ├── OrderDTO.java
+│   │   │   │   ├── OrderItemDTO.java
+│   │   │   │   └── OrderMessage.java
+│   │   │   ├── messaging/
+│   │   │   │   ├── MessageListener.java
+│   │   │   │   ├── OrderListener.java
+│   │   │   │   └── RabbitMQPublisher.java
+│   │   │   ├── model/
+│   │   │   │   ├── Order.java
+│   │   │   │   └── OrderItem.java
+│   │   │   ├── repository/
+│   │   │   │   └── OrderRepository.java
+│   │   │   ├── service/
+│   │   │   │   └── OrderService.java
+│   │   │   └── RestaurantServiceApplication.java
+│   │   └── resources/
+│   │       └── application.yml
+│   ├── mvnw
+│   ├── mvnw.cmd
+│   └── pom.xml
+│
+├── driver-service/
+│   ├── src/main/
+│   │   ├── java/com/foodieExpress/driver_service/
+│   │   │   ├── config/
+│   │   │   │   ├── RabbitMQConfig.java
+│   │   │   │   └── WebConfig.java
+│   │   │   ├── controller/
+│   │   │   │   └── DeliveryController.java
+│   │   │   ├── dto/
+│   │   │   │   ├── DriverOrderDTO.java
+│   │   │   │   ├── OrderItemDTO.java
+│   │   │   │   └── OrderMessage.java
+│   │   │   ├── messaging/
+│   │   │   │   └── StatusUpdatePublisher.java
+│   │   │   ├── model/
+│   │   │   │   ├── DeliveryStatus.java
+│   │   │   │   ├── OrderItem.java
+│   │   │   │   └── Order.java
+│   │   │   ├── repository/
+│   │   │   │   └── OrderRepository.java
+│   │   │   ├── service/
+│   │   │   │   └── DeliveryService.java
+│   │   │   └── DriverServiceApplication.java
+│   │   └── resources/
+│   │       └── application.yml
+│   ├── mvnw
+│   ├── mvnw.cmd
+│   └── pom.xml
+│
+├── foodie-customer-frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Header.tsx
+│   │   │   ├── MenuItemCard.tsx
+│   │   │   └── RestaurantCard.tsx
+│   │   ├── contexts/
+│   │   │   └── CartContext.tsx
+│   │   ├── hooks/
+│   │   │   ├── use-mobile.tsx
+│   │   │   └── use-toast.ts
+│   │   ├── lib/
+│   │   │   ├── mockData.ts
+│   │   │   └── utils.ts
+│   │   ├── pages/
+│   │   │   ├── Cart.tsx
+│   │   │   ├── Home.tsx
+│   │   │   ├── Index.tsx
+│   │   │   ├── NotFound.tsx
+│   │   │   ├── RestaurantMenu.tsx
+│   │   │   └── TrackOrder.tsx
+│   │   ├── api.js
+│   │   ├── App.css
+│   │   ├── App.tsx
+│   │   ├── index.css
+│   │   ├── index.tsx
+│   │   └── main.tsx
+│   ├── components.json
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.js
+│
+├── foodie-restaurant-frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── OrderCard.tsx
+│   │   ├── hooks/
+│   │   │   ├── use-mobile.tsx
+│   │   │   └── use-toast.ts
+│   │   ├── lib/
+│   │   │   └── utils.ts
+│   │   ├── pages/
+│   │   │   ├── AcceptedOrders.tsx
+│   │   │   ├── DeliveredOrders.tsx
+│   │   │   ├── PreparedOrders.tsx
+│   │   │   ├── Index.tsx
+│   │   │   └── NotFound.tsx
+│   │   ├── types/
+│   │   │   └── order.ts
+│   │   ├── api.js
+│   │   ├── App.css
+│   │   ├── App.tsx
+│   │   ├── index.css
+│   │   ├── index.tsx
+│   │   └── main.tsx
+│   ├── components.json
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.js
+│
+├── foodie-driver-frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   │   ├── use-mobile.tsx
+│   │   │   └── use-toast.ts
+│   │   ├── lib/
+│   │   │   └── utils.ts
+│   │   ├── pages/
+│   │   │   ├── Index.tsx
+│   │   │   ├── DeliveredOrders.tsx
+│   │   │   ├── PickedUpOrders.tsx
+│   │   │   └── NotFound.tsx
+│   │   ├── App.css
+│   │   ├── App.tsx
+│   │   ├── api.js
+│   │   ├── index.css
+│   │   ├── main.tsx
+│   │   └── vite-env.d.ts
+│   ├── .gitignore
+│   ├── README.md
+│   ├── components.json
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.ts
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.js

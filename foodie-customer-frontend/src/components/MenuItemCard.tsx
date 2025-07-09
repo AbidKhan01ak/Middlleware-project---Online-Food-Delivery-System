@@ -7,6 +7,7 @@ interface MenuItemCardProps {
   item: MenuItem;
   restaurantId: string;
   restaurantName: string;
+  image?: string;
 }
 
 const MenuItemCard = ({
@@ -26,7 +27,7 @@ const MenuItemCard = ({
         <CardHeader className="pb-2">
           <h3 className="font-semibold text-lg">{item.name}</h3>
           <p className="text-2xl font-bold text-green-600">
-            ${item.price.toFixed(2)}
+            ₹{item.price.toFixed(2)}
           </p>
         </CardHeader>
         <CardContent className="pt-0">
@@ -44,7 +45,7 @@ const MenuItemCard = ({
           <img
             src={item.image}
             alt={item.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain rounded-lg"
           />
         ) : (
           <div className="text-3xl">🍽️</div>

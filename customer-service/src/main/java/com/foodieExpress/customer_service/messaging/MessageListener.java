@@ -19,22 +19,27 @@ public class MessageListener {
         this.orderRepository = orderRepository;
     }
     
-    @RabbitListener(queues = "order.ready.queue")
-    public void handleOrderReady(OrderMessage message) {
-        log.info("Customer received: Order is ready for orderId: {}", message.getOrderId());
-        // You can add notification logic here (email, push, etc.)
-    }
+    // @RabbitListener(queues = "order.ready.queue")
+    // public void handleOrderReady(OrderMessage message) {
+    //     log.info("Customer received: Order is ready for orderId: {}", message.getOrderId());
+    //     // You can add notification logic here (email, push, etc.)
+    // }
 
-    @RabbitListener(queues = "order.pickedup.queue")
-    public void handlePickedUp(OrderMessage message) {
-        log.info("Customer received: Order picked up by driver for orderId: {}", message.getOrderId());
-    }
+    // @RabbitListener(queues = "order.pickedup.queue")
+    // public void handlePickedUp(OrderMessage message) {
+    //     log.info("Customer received: Order picked up by driver for orderId: {}", message.getOrderId());
+    // }
 
-    @RabbitListener(queues = "order.delivered.queue")
-    public void handleDelivered(OrderMessage message) {
-        log.info("Customer received: Order delivered for orderId: {}", message.getOrderId());
-    }
+    // @RabbitListener(queues = "order.delivered.queue")
+    // public void handleDelivered(OrderMessage message) {
+    //     log.info("Customer received: Order delivered for orderId: {}", message.getOrderId());
+    // }
 
+    @RabbitListener(queues = "order-status-updates")
+    public void debugAllMessages(Object msg) {
+        System.out.println("Raw message received: " + msg);
+    }
+    
     @RabbitListener(queues = "order-status-updates")
     public void handleOrderStatusUpdate(OrderMessage message) {
         String orderId = message.getOrderId();

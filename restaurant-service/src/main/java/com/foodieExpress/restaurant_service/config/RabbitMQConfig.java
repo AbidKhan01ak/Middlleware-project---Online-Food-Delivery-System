@@ -32,7 +32,7 @@ public class RabbitMQConfig {
                 .with(ROUTING_KEY);
     }
 
-    @Bean(name = "orderStatusQueue")
+    @Bean
     public Queue orderStatusQueue() {
         return new Queue("order-status-updates");
     }
